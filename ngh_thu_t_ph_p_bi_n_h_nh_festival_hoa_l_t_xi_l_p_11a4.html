@@ -1,0 +1,3632 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nghệ Thuật Phép Biến Hình — Festival Hoa Đà Lạt XI | Lớp 11A4</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-cream: #FAF7F2;
+      --pine-dark: #1B4332;
+      --pine-mid: #2D6A4F;
+      --blossom: #D84B7A;
+      --sunflower: #E9A825;
+      --hydrangea: #5B6EE1;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-cream);
+      color: #1F2937;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    .font-serif-title {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    .tab-btn {
+      transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #1B4332 0%, #2D6A4F 100%);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(27, 67, 50, 0.25);
+    }
+    .tab-btn:not(.active):hover {
+      background-color: #EFEAE0;
+      color: #1B4332;
+    }
+    .motif-card {
+      transition: all 0.16s ease;
+      cursor: pointer;
+    }
+    .motif-card:hover {
+      transform: translateY(-2px);
+      border-color: #2D6A4F;
+    }
+    .motif-card.selected {
+      border-color: #D84B7A;
+      background-color: #FFF5F8;
+      box-shadow: 0 0 0 2px rgba(216, 75, 122, 0.22);
+    }
+    .preset-btn.selected {
+      border-color: #1B4332;
+      background-color: #ECFDF5;
+      color: #1B4332;
+      font-weight: 600;
+    }
+    .palette-chip.selected {
+      box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #1B4332;
+    }
+    input[type="range"] {
+      accent-color: #2D6A4F;
+      cursor: pointer;
+    }
+    canvas {
+      touch-action: none;
+      display: block;
+    }
+    .canvas-stage {
+      background-color: #FFFFFF;
+      background-image: radial-gradient(#E5E7EB 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 50;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+    @media print {
+      body * { visibility: hidden !important; }
+      #print-sheet-wrap, #print-sheet-wrap * { visibility: visible !important; }
+      #print-sheet-wrap {
+        position: fixed !important;
+        inset: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #FFFFFF !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      #print-sheet-canvas {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 100vh !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-r from-[#1B4332] via-[#24553F] to-[#1B4332] text-white shadow-md sticky top-0 z-30">
+    <div class="max-w-[1440px] mx-auto px-3 sm:px-5 py-2.5 flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-white/15 border border-white/25 flex items-center justify-center shrink-0 shadow-inner">
+          <svg class="w-6 h-6 text-[#FDE047]" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2c1.2 2.4 3.2 3.1 5.2 2.2-.8 2.1-.1 4.1 2.2 5.3-2.3 1.2-3 3.2-2.2 5.3-2-1-4-.2-5.2 2.2-1.2-2.4-3.2-3.2-5.2-2.2.8-2.1.1-4.1-2.2-5.3 2.3-1.2 3-3.2 2.2-5.3 2 .9 4 .2 5.2-2.2z"/>
+            <circle cx="12" cy="9.5" r="2.2" fill="#92400E"/>
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="font-serif-title text-base sm:text-xl font-bold tracking-wide truncate">
+              Nghệ Thuật Phép Biến Hình
+            </h1>
+            <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F59E0B]/25 text-[#FDE68A] border border-[#F59E0B]/40">
+              STEAM Toán 11
+            </span>
+          </div>
+          <p class="text-xs text-emerald-100/90 truncate">
+            Chủ đề: <strong class="text-white">Festival Hoa Đà Lạt lần thứ XI</strong> · <strong class="text-[#FBCFE8]">Lớp 11A4</strong>
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="btn-export-png" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#D84B7A] hover:bg-[#C03A67] text-white text-xs sm:text-sm font-semibold shadow-sm transition cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+          <span>Lưu tranh PNG</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 6-TAB NAVIGATION BAR -->
+    <nav class="bg-[#FAF7F2] border-b border-[#E5DFD3] px-2 sm:px-5 py-2" aria-label="Chọn phép biến hình">
+      <div class="max-w-[1440px] mx-auto flex items-center gap-1.5 overflow-x-auto pb-0.5" id="tab-bar">
+        <button type="button" data-tab="translation" class="tab-btn active px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-1.5 cursor-pointer">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          1. Phép tịnh tiến
+        </button>
+        <button type="button" data-tab="axial" class="tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-1.5 cursor-pointer">
+          <span class="w-2 h-2 rounded-full bg-pink-400"></span>
+          2. Đối xứng trục
+        </button>
+        <button type="button" data-tab="central" class="tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-1.5 cursor-pointer">
+          <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+          3. Đối xứng tâm
+        </button>
+        <button type="button" data-tab="rotation" class="tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-1.5 cursor-pointer">
+          <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+          4. Phép quay
+        </button>
+        <button type="button" data-tab="homothety" class="tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-1.5 cursor-pointer">
+          <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+          5. Phép vị tự
+        </button>
+        <button type="button" data-tab="tessellation" class="tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-1.5 cursor-pointer">
+          <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+          6. Tạo tranh đan khít
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="flex-1 max-w-[1440px] w-full mx-auto p-3 sm:p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+    <!-- ==================== TRANSFORMATIONS WORKSPACE (TABS 1-5) ==================== -->
+    <section id="workspace-transform" class="lg:col-span-12 grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+      <!-- LEFT SIDEBAR: KHO HÌNH MẪU + ĐIỀU KHIỂN -->
+      <aside class="lg:col-span-4 xl:col-span-3 flex flex-col gap-3.5 order-2 lg:order-1">
+
+        <!-- KHO HÌNH MẪU -->
+        <div class="bg-white rounded-2xl border border-[#E5DFD3] shadow-sm p-3.5">
+          <div class="flex items-center justify-between mb-2.5">
+            <h2 class="text-sm font-bold text-[#1B4332] flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-[#D84B7A]" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z"/></svg>
+              Kho hình mẫu Đà Lạt
+            </h2>
+            <span class="text-[11px] text-gray-500 font-medium" id="active-motif-label">Hoa Dã Quỳ</span>
+          </div>
+          <div id="motif-gallery" class="grid grid-cols-4 gap-2"></div>
+          <div class="mt-3 pt-2.5 border-t border-gray-100">
+            <div class="flex items-center justify-between text-xs mb-1">
+              <span class="font-semibold text-gray-700">Kích thước hình mẫu</span>
+              <span id="val-fig-scale" class="font-mono font-bold text-[#1B4332]">100%</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="btn-scale-down" type="button" title="Thu nhỏ hình mẫu" class="w-7 h-7 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[#1B4332] font-bold text-sm flex items-center justify-center shrink-0 cursor-pointer">−</button>
+              <input id="sl-fig-scale" type="range" min="0.5" max="2.5" step="0.1" value="1.0" class="w-full" />
+              <button id="btn-scale-up" type="button" title="Phóng to hình mẫu" class="w-7 h-7 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[#1B4332] font-bold text-sm flex items-center justify-center shrink-0 cursor-pointer">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- THÔNG SỐ PHÉP BIẾN HÌNH -->
+        <div class="bg-white rounded-2xl border border-[#E5DFD3] shadow-sm p-3.5 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <h2 id="control-title" class="text-sm font-bold text-[#1B4332]">Thông số Phép tịnh tiến</h2>
+            <button id="btn-reset-transform" type="button" class="text-xs font-semibold text-gray-500 hover:text-[#1B4332] underline cursor-pointer">
+              Đặt lại
+            </button>
+          </div>
+
+          <!-- Dynamic Controls Container -->
+          <div id="transform-controls" class="space-y-3 text-xs sm:text-sm"></div>
+
+          <!-- Action Buttons -->
+          <div class="grid grid-cols-2 gap-2 pt-1 border-t border-gray-100">
+            <button id="btn-animate" type="button" class="py-2 px-3 rounded-xl bg-[#1B4332] hover:bg-[#2D6A4F] text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 shadow-sm transition cursor-pointer">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.84A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.891a1.5 1.5 0 000-2.538L6.3 2.841z"/></svg>
+              <span id="btn-animate-text">Diễn hoạt</span>
+            </button>
+            <button id="btn-center-view" type="button" class="py-2 px-3 rounded-xl bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[#1B4332] text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>
+              <span>Canh giữa</span>
+            </button>
+          </div>
+
+          <!-- Display Toggles -->
+          <div class="flex flex-wrap gap-x-4 gap-y-2 pt-2 border-t border-gray-100 text-xs text-gray-700">
+            <label class="inline-flex items-center gap-1.5 cursor-pointer select-none">
+              <input id="toggle-grid" type="checkbox" checked class="rounded text-[#1B4332]" />
+              <span>Lưới tọa độ Oxy</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 cursor-pointer select-none">
+              <input id="toggle-guides" type="checkbox" checked class="rounded text-[#1B4332]" />
+              <span>Đường dẫn &amp; điểm M → M'</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- THẺ KIẾN THỨC TOÁN HỌC -->
+        <div class="bg-gradient-to-br from-[#F4F9F6] to-[#FFF8FA] rounded-2xl border border-[#DCE7E0] p-3.5 text-xs space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-[#1B4332] uppercase tracking-wider text-[11px]">Công thức &amp; Tính chất</span>
+            <span id="math-badge" class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-[10px]">Phép dời hình</span>
+          </div>
+          <div id="math-formula" class="font-mono text-xs sm:text-sm font-bold text-[#D84B7A] bg-white/80 rounded-lg px-2.5 py-1.5 border border-pink-100">
+            M'(x + a ; y + b)
+          </div>
+          <p id="math-note" class="text-gray-600 leading-relaxed"></p>
+        </div>
+      </aside>
+
+      <!-- RIGHT STAGE: INTERACTIVE CANVAS -->
+      <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-2.5 order-1 lg:order-2">
+        <div class="bg-white rounded-2xl border border-[#E5DFD3] shadow-sm overflow-hidden flex flex-col">
+          <!-- Stage Top Info Strip -->
+          <div class="px-4 py-2 bg-[#F8F5EE] border-b border-[#E5DFD3] flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-2 text-gray-700">
+              <span class="inline-flex items-center gap-1 font-semibold text-[#1B4332]">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#1B4332]"></span> Hình gốc H
+              </span>
+              <span class="text-gray-400">→</span>
+              <span class="inline-flex items-center gap-1 font-semibold text-[#D84B7A]">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#D84B7A]"></span> Ảnh H'
+              </span>
+            </div>
+            <div id="stage-hint" class="text-gray-600 italic">
+              Kéo hình mẫu hoặc đầu mũi tên vectơ trực tiếp trên mặt phẳng tọa độ
+            </div>
+          </div>
+
+          <!-- Canvas Container -->
+          <div id="transform-canvas-wrap" class="relative w-full h-[460px] sm:h-[560px] lg:h-[620px] canvas-stage">
+            <canvas id="transform-canvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+            <!-- Live Coordinate Pill -->
+            <div id="coord-readout" class="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-mono text-gray-700 shadow-sm pointer-events-none">
+              M(0.0; 0.0) → M'(4.0; 2.0)
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TESSELLATION STUDIO (TAB 6) ==================== -->
+    <section id="workspace-tessellation" class="hidden lg:col-span-12 grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+      <!-- LEFT SIDEBAR: TILE SCULPTOR & CONTROLS -->
+      <aside class="lg:col-span-4 xl:col-span-4 flex flex-col gap-3.5 order-2 lg:order-1">
+
+        <!-- INTERACTIVE BASE TILE EDITOR -->
+        <div class="bg-white rounded-2xl border border-[#E5DFD3] shadow-sm p-3.5">
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="text-sm font-bold text-[#1B4332]">Thiết kế ô gạch cơ sở</h2>
+            <div class="flex items-center gap-1">
+              <button id="btn-tess-zoom-editor" type="button" title="Phóng to khung thiết kế ô gạch để kéo chấm dễ hơn" class="text-xs font-semibold px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-[#1B4332] border border-emerald-200 transition cursor-pointer">
+                Phóng to
+              </button>
+              <button id="btn-tess-reset-base" type="button" title="Đưa các cạnh về hình cơ sở phẳng" class="text-xs font-semibold px-2 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200 transition cursor-pointer">
+                Reset
+              </button>
+              <button id="btn-tess-random" type="button" class="text-xs font-semibold px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition cursor-pointer">
+                Ngẫu nhiên
+              </button>
+            </div>
+          </div>
+          <div class="relative w-full h-[220px] bg-[#FAF7F2] rounded-xl border border-dashed border-[#CBD5E1] overflow-hidden">
+            <canvas id="tile-editor-canvas" class="w-full h-full cursor-pointer"></canvas>
+            <div class="absolute bottom-2 left-2 right-2 flex justify-between text-[10px] text-gray-500 pointer-events-none">
+              <span class="bg-white/85 px-1.5 py-0.5 rounded">● Nút xanh/hồng: kéo để tạo hình</span>
+              <span class="bg-white/85 px-1.5 py-0.5 rounded">Cạnh đối tự biến hình khớp 100%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUY TẮC PHÉP BIẾN HÌNH & MẪU CÓ SẴN -->
+        <div class="bg-white rounded-2xl border border-[#E5DFD3] shadow-sm p-3.5 space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-[#1B4332] mb-1.5">1. Chọn hình cơ sở</label>
+            <div class="grid grid-cols-2 gap-1.5" id="tess-shape-group">
+              <button type="button" data-shape="square" class="preset-btn selected px-2.5 py-1.5 rounded-xl border border-gray-200 text-xs flex items-center justify-center gap-1.5 transition cursor-pointer">
+                <span class="w-3.5 h-3.5 border-2 border-current rounded-[2px] inline-block"></span>
+                <span>Hình vuông (1:1)</span>
+              </button>
+              <button type="button" data-shape="rect" class="preset-btn px-2.5 py-1.5 rounded-xl border border-gray-200 text-xs flex items-center justify-center gap-1.5 transition cursor-pointer">
+                <span class="w-5 h-3 border-2 border-current rounded-[2px] inline-block"></span>
+                <span>Hình chữ nhật (3:2)</span>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#1B4332] mb-1.5">2. Quy tắc phép dời hình tạo đan khít</label>
+            <div class="grid grid-cols-2 gap-1.5" id="tess-mode-group">
+              <button type="button" data-mode="translation" class="preset-btn selected px-2.5 py-2 rounded-xl border border-gray-200 text-xs text-left transition cursor-pointer">
+                <div class="font-bold">Tịnh tiến (Escher)</div>
+                <div class="text-[10px] text-gray-500">Khớp cạnh đối song song</div>
+              </button>
+              <button type="button" data-mode="axial_mirror" class="preset-btn px-2.5 py-2 rounded-xl border border-gray-200 text-xs text-left transition cursor-pointer">
+                <div class="font-bold">Đối xứng trục</div>
+                <div class="text-[10px] text-gray-500">Lật gương 2 chiều ngang-dọc</div>
+              </button>
+              <button type="button" data-mode="central180" class="preset-btn px-2.5 py-2 rounded-xl border border-gray-200 text-xs text-left transition cursor-pointer">
+                <div class="font-bold">Đối xứng tâm</div>
+                <div class="text-[10px] text-gray-500">Quay 180° quanh trung điểm I</div>
+              </button>
+              <button type="button" data-mode="rotation90" class="preset-btn px-2.5 py-2 rounded-xl border border-gray-200 text-xs text-left transition cursor-pointer">
+                <div class="font-bold">Quay 90° quanh đỉnh</div>
+                <div class="text-[10px] text-gray-500">Tâm A (+90°) &amp; Tâm B (-90°)</div>
+              </button>
+              <button type="button" data-mode="glide" class="preset-btn px-2.5 py-2 rounded-xl border border-gray-200 text-xs text-left transition cursor-pointer">
+                <div class="font-bold">Đối xứng trượt</div>
+                <div class="text-[10px] text-gray-500">Làn sóng hoa lật ngược</div>
+              </button>
+              <button type="button" data-mode="hex120" class="preset-btn px-2.5 py-2 rounded-xl border border-gray-200 text-xs text-left transition cursor-pointer">
+                <div class="font-bold">Lục giác quay 120°</div>
+                <div class="text-[10px] text-gray-500">Tổ ong &amp; sao hoa 6 cánh</div>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#1B4332] mb-1.5">3. Kho mẫu tranh đan khít Đà Lạt</label>
+            <div class="grid grid-cols-3 gap-1.5" id="tess-presets">
+              <button type="button" data-preset="daquy" class="px-2 py-1.5 rounded-lg border border-gray-200 hover:border-[#1B4332] text-xs font-medium bg-[#FAF7F2] cursor-pointer">Hoa Dã Quỳ</button>
+              <button type="button" data-preset="cachep" class="px-2 py-1.5 rounded-lg border border-gray-200 hover:border-[#1B4332] text-xs font-medium bg-[#FAF7F2] cursor-pointer">Cá Hồ Xuân Hương</button>
+              <button type="button" data-preset="buom" class="px-2 py-1.5 rounded-lg border border-gray-200 hover:border-[#1B4332] text-xs font-medium bg-[#FAF7F2] cursor-pointer">Bướm Cao Nguyên</button>
+              <button type="button" data-preset="songhoa" class="px-2 py-1.5 rounded-lg border border-gray-200 hover:border-[#1B4332] text-xs font-medium bg-[#FAF7F2] cursor-pointer">Sóng Cẩm Tú Cầu</button>
+              <button type="button" data-preset="anhdao" class="px-2 py-1.5 rounded-lg border border-gray-200 hover:border-[#1B4332] text-xs font-medium bg-[#FAF7F2] cursor-pointer">Sao Mai Anh Đào</button>
+              <button type="button" data-preset="reset" class="px-2 py-1.5 rounded-lg border border-gray-200 hover:border-[#1B4332] text-xs font-medium bg-white cursor-pointer">Ô cơ bản</button>
+            </div>
+          </div>
+
+          <!-- BẢNG MÀU -->
+          <div>
+            <label class="block text-xs font-bold text-[#1B4332] mb-1.5">4. Bảng màu Festival Hoa Đà Lạt</label>
+            <div class="flex items-center gap-2.5 flex-wrap" id="tess-palettes"></div>
+          </div>
+
+          <!-- MẬT ĐỘ & TRANG TRÍ -->
+          <div class="grid grid-cols-2 gap-3 pt-1 border-t border-gray-100">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-gray-700">Mật độ lát</span>
+                <span id="tess-density-val" class="font-mono font-bold text-[#1B4332]">6×6</span>
+              </div>
+              <input id="tess-density" type="range" min="3" max="10" step="1" value="6" class="w-full" />
+            </div>
+            <div>
+              <label for="tess-stamp" class="block text-xs font-semibold text-gray-700 mb-1">Họa tiết tâm gạch</label>
+              <select id="tess-stamp" class="w-full text-xs rounded-lg border border-gray-300 px-2 py-1.5 bg-white">
+                <option value="flower">Bông hoa nhỏ</option>
+                <option value="eye">Mắt cá / Nhụy hoa</option>
+                <option value="veins">Gân lá nghệ thuật</option>
+                <option value="none">Trơn màu tối giản</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1 text-xs text-gray-700">
+            <label class="inline-flex items-center gap-1.5 cursor-pointer select-none">
+              <input id="tess-stroke" type="checkbox" checked class="rounded text-[#1B4332]" />
+              <span>Hiện viền gạch</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 cursor-pointer select-none">
+              <input id="tess-highlight-base" type="checkbox" class="rounded text-[#D84B7A]" />
+              <span>Làm nổi ô gốc</span>
+            </label>
+          </div>
+          <div class="pt-2 border-t border-gray-100">
+            <button id="btn-open-print-sheet" type="button" class="w-full py-2 px-3 rounded-xl bg-[#1B4332] hover:bg-[#2D6A4F] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>
+              <span>In mẫu A4 để giám khảo vẽ theo</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- RIGHT STAGE: TESSELLATION ART CANVAS -->
+      <div class="lg:col-span-8 xl:col-span-8 flex flex-col gap-2.5 order-1 lg:order-2">
+        <div class="bg-white rounded-2xl border border-[#E5DFD3] shadow-sm overflow-hidden flex flex-col">
+          <div class="px-4 py-2.5 bg-[#F8F5EE] border-b border-[#E5DFD3] flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="font-semibold text-[#1B4332]" id="tess-status-title">
+              Bước 1/3: Thiết kế 1 mảnh ghép cơ sở từ Hình vuông
+            </div>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <div class="inline-flex rounded-xl bg-white border border-[#E5DFD3] p-0.5" id="tess-step-pills">
+                <button type="button" data-step="1" class="tess-step-btn px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#1B4332] text-white cursor-pointer">B1: Ô gốc</button>
+                <button type="button" data-step="2" class="tess-step-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold text-gray-600 hover:text-[#1B4332] cursor-pointer">B2: Ghép dải</button>
+                <button type="button" data-step="3" class="tess-step-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold text-gray-600 hover:text-[#1B4332] cursor-pointer">B3: Toàn tranh</button>
+              </div>
+              <button type="button" id="btn-tess-prev" class="px-2.5 py-1.5 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold text-[11px] cursor-pointer disabled:opacity-40" disabled>← Trước</button>
+              <button type="button" id="btn-tess-next" class="px-3 py-1.5 rounded-lg bg-[#D84B7A] hover:bg-[#C03A67] text-white font-bold text-[11px] shadow-sm cursor-pointer">Bước tiếp theo →</button>
+            </div>
+          </div>
+          <div id="tess-canvas-wrap" class="relative w-full h-[460px] sm:h-[560px] lg:h-[620px] bg-[#FAF7F2]">
+            <canvas id="tess-canvas" class="w-full h-full"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ZOOMED TILE EDITOR MODAL -->
+  <div id="modal-tile-zoom" class="hidden fixed inset-0 z-50 bg-black/55 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5">
+    <div class="bg-white rounded-2xl border border-[#E5DFD3] shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col">
+      <div class="px-4 py-3 bg-[#1B4332] text-white flex items-center justify-between gap-2">
+        <div>
+          <h3 class="text-sm sm:text-base font-bold">Phóng to khung thiết kế ô gạch cơ sở</h3>
+          <p class="text-[11px] text-emerald-100">Kéo các chấm tròn tự do sát tới biên để tạo đường nét sắc sảo</p>
+        </div>
+        <button id="btn-close-zoom-modal" type="button" class="px-3 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 text-white text-xs font-bold cursor-pointer">
+          Xong ✕
+        </button>
+      </div>
+      <div class="p-4 bg-[#FAF7F2]">
+        <div class="relative w-full h-[380px] sm:h-[440px] bg-white rounded-xl border-2 border-dashed border-[#CBD5E1] overflow-hidden">
+          <canvas id="tile-zoom-canvas" class="w-full h-full cursor-pointer"></canvas>
+        </div>
+      </div>
+      <div class="px-4 py-2.5 bg-white border-t border-gray-100 flex flex-wrap items-center justify-between gap-2">
+        <span class="text-xs text-gray-500">Mọi thay đổi cập nhật trực tiếp sang bức tranh đan khít</span>
+        <div class="flex items-center gap-2">
+          <button id="btn-zoom-reset" type="button" class="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold cursor-pointer">Reset hình cơ sở</button>
+          <button id="btn-zoom-random" type="button" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-semibold cursor-pointer">Ngẫu nhiên</button>
+          <button id="btn-zoom-done" type="button" class="px-4 py-1.5 rounded-lg bg-[#D84B7A] hover:bg-[#C03A67] text-white text-xs font-bold cursor-pointer">Áp dụng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- A4 PRINT WORKSHEET MODAL (ĐỂ GIÁM KHẢO VẼ THEO) -->
+  <div id="modal-print-sheet" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5">
+    <div class="bg-white rounded-2xl border border-[#E5DFD3] shadow-2xl w-full max-w-3xl max-h-[92vh] overflow-hidden flex flex-col">
+      <div class="px-4 py-3 bg-[#1B4332] text-white flex flex-wrap items-center justify-between gap-2 shrink-0">
+        <div>
+          <h3 class="text-sm sm:text-base font-bold">Phiếu In Mẫu A4 — Dành cho Giám khảo vẽ theo</h3>
+          <p class="text-[11px] text-emerald-100">Gồm mảnh ghép cơ sở tỉ lệ lớn + khung lưới nét mờ để tô và vẽ nối tiếp</p>
+        </div>
+        <button id="btn-close-print-modal" type="button" class="px-3 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 text-white text-xs font-bold cursor-pointer">
+          Đóng ✕
+        </button>
+      </div>
+      <div id="print-sheet-wrap" class="flex-1 overflow-auto bg-gray-100 p-4 flex justify-center">
+        <canvas id="print-sheet-canvas" class="bg-white shadow-lg border border-gray-300 max-w-full h-auto"></canvas>
+      </div>
+      <div class="px-4 py-3 bg-white border-t border-gray-200 flex flex-wrap items-center justify-between gap-2 shrink-0">
+        <label class="inline-flex items-center gap-2 text-xs text-gray-700 cursor-pointer select-none">
+          <input id="chk-print-guides" type="checkbox" checked class="rounded text-[#1B4332]" />
+          <span>Hiện nét mờ gợi ý trên khung vẽ cho giám khảo</span>
+        </label>
+        <div class="flex items-center gap-2">
+          <button id="btn-download-worksheet" type="button" class="px-3.5 py-2 rounded-xl bg-[#D84B7A] hover:bg-[#C03A67] text-white text-xs font-bold cursor-pointer">
+            Tải ảnh phiếu in A4 (PNG)
+          </button>
+          <button id="btn-trigger-print" type="button" class="px-3.5 py-2 rounded-xl bg-[#1B4332] hover:bg-[#2D6A4F] text-white text-xs font-bold cursor-pointer">
+            In trực tiếp (Print)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast bg-[#1B4332] text-white px-4 py-2.5 rounded-xl shadow-lg text-xs sm:text-sm font-medium flex items-center gap-2">
+    <svg class="w-4 h-4 text-[#FDE047]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+    <span id="toast-msg">Đã lưu tranh PNG!</span>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // =========================================================================
+      // 1. KHO HÌNH MẪU FESTIVAL HOA ĐÀ LẠT (8 VECTOR MOTIFS)
+      // Each motif is drawn in local coordinates centered around (0,0), radius ~1.4 units
+      // Note: Y axis in math space goes UP; canvas draws with Y-up transform or handled cleanly.
+      // We draw motifs in standard math coordinates (y up) so reflection/rotation feel natural!
+      // =========================================================================
+      const MOTIFS = [
+        {
+          id: 'daquy',
+          name: 'Hoa Dã Quỳ', short: 'Dã Quỳ',
+          tag: 'Biểu tượng Đà Lạt',
+          draw(ctx, isImage) {
+            const alpha = isImage ? 1 : 0.94;
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            // Curved stem & asymmetric leaf (shows orientation clearly)
+            ctx.strokeStyle = '#2D6A4F';
+            ctx.lineWidth = 0.11;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(0, -0.1);
+            ctx.quadraticCurveTo(0.25, -0.8, 0.55, -1.35);
+            ctx.stroke();
+
+            // Asymmetric leaf on the right side
+            ctx.fillStyle = '#40916C';
+            ctx.beginPath();
+            ctx.moveTo(0.25, -0.75);
+            ctx.quadraticCurveTo(0.95, -0.45, 1.15, -0.95);
+            ctx.quadraticCurveTo(0.7, -1.15, 0.25, -0.75);
+            ctx.fill();
+
+            // 10 golden petals
+            const petals = 10;
+            for (let i = 0; i < petals; i++) {
+              ctx.save();
+              ctx.rotate((i * Math.PI * 2) / petals);
+              ctx.fillStyle = i % 2 === 0 ? '#FACC15' : '#F59E0B';
+              ctx.strokeStyle = '#B45309';
+              ctx.lineWidth = 0.03;
+              ctx.beginPath();
+              ctx.moveTo(0, 0);
+              ctx.quadraticCurveTo(0.26, 0.55, 0, 1.12);
+              ctx.quadraticCurveTo(-0.26, 0.55, 0, 0);
+              ctx.fill();
+              ctx.stroke();
+              ctx.restore();
+            }
+            // Center disc
+            ctx.fillStyle = '#78350F';
+            ctx.beginPath();
+            ctx.arc(0, 0, 0.32, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#D97706';
+            ctx.beginPath();
+            ctx.arc(-0.07, 0.08, 0.14, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        },
+        {
+          id: 'maianhdao',
+          name: 'Mai Anh Đào', short: 'Anh Đào',
+          tag: 'Sắc hồng phố núi',
+          draw(ctx) {
+            ctx.save();
+            // Branch curving to upper-right with a small bud
+            ctx.strokeStyle = '#6D4C41';
+            ctx.lineWidth = 0.1;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(-0.9, -1.1);
+            ctx.quadraticCurveTo(-0.1, -0.3, 1.05, 0.45);
+            ctx.stroke();
+
+            // Bud on upper right
+            ctx.fillStyle = '#EC4899';
+            ctx.beginPath();
+            ctx.ellipse(1.08, 0.5, 0.22, 0.12, 0.6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 5 notched cherry blossom petals
+            for (let i = 0; i < 5; i++) {
+              ctx.save();
+              ctx.rotate((i * Math.PI * 2) / 5 + 0.15);
+              ctx.fillStyle = '#F9A8D4';
+              ctx.strokeStyle = '#DB2777';
+              ctx.lineWidth = 0.035;
+              ctx.beginPath();
+              ctx.moveTo(0, 0);
+              ctx.bezierCurveTo(-0.42, 0.4, -0.35, 1.05, -0.07, 1.02);
+              ctx.lineTo(0, 0.85);
+              ctx.lineTo(0.07, 1.02);
+              ctx.bezierCurveTo(0.35, 1.05, 0.42, 0.4, 0, 0);
+              ctx.fill();
+              ctx.stroke();
+              ctx.restore();
+            }
+            // Stamens
+            ctx.fillStyle = '#BE185D';
+            ctx.beginPath();
+            ctx.arc(0, 0, 0.22, 0, Math.PI * 2);
+            ctx.fill();
+            for (let i = 0; i < 6; i++) {
+              const a = (i * Math.PI) / 3;
+              ctx.fillStyle = '#FDE047';
+              ctx.beginPath();
+              ctx.arc(Math.cos(a) * 0.28, Math.sin(a) * 0.28, 0.055, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            ctx.restore();
+          }
+        },
+        {
+          id: 'camtucau',
+          name: 'Cẩm Tú Cầu', short: 'Tú Cầu',
+          tag: 'Xanh tím mộng mơ',
+          draw(ctx) {
+            ctx.save();
+            // Asymmetric big leaf on bottom-left
+            ctx.fillStyle = '#2D6A4F';
+            ctx.beginPath();
+            ctx.moveTo(0, -0.1);
+            ctx.quadraticCurveTo(-1.15, -0.35, -1.2, -1.15);
+            ctx.quadraticCurveTo(-0.4, -1.1, 0, -0.1);
+            ctx.fill();
+
+            // Cluster of 7 four-petal florets
+            const florets = [
+              { x: 0, y: 0.15, c: '#818CF8', s: 0.42 },
+              { x: -0.52, y: 0.42, c: '#60A5FA', s: 0.36 },
+              { x: 0.52, y: 0.45, c: '#A78BFA', s: 0.38 },
+              { x: 0.05, y: 0.78, c: '#93C5FD', s: 0.36 },
+              { x: -0.48, y: -0.18, c: '#C4B5FD', s: 0.34 },
+              { x: 0.55, y: -0.12, c: '#6366F1', s: 0.36 },
+              { x: 0.12, y: -0.45, c: '#A5B4FC', s: 0.34 }
+            ];
+            florets.forEach(f => {
+              ctx.save();
+              ctx.translate(f.x, f.y);
+              ctx.fillStyle = f.c;
+              ctx.strokeStyle = '#3730A3';
+              ctx.lineWidth = 0.025;
+              for (let k = 0; k < 4; k++) {
+                ctx.rotate(Math.PI / 2);
+                ctx.beginPath();
+                ctx.ellipse(f.s * 0.45, 0, f.s * 0.48, f.s * 0.32, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+              }
+              ctx.fillStyle = '#FEF9C3';
+              ctx.beginPath();
+              ctx.arc(0, 0, 0.07, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            });
+            ctx.restore();
+          }
+        },
+        {
+          id: 'hoahong',
+          name: 'Hoa Hồng Đỏ', short: 'Hoa Hồng',
+          tag: 'Nữ hoàng sắc hoa',
+          draw(ctx) {
+            ctx.save();
+            // Stem + right-tilted leaf
+            ctx.strokeStyle = '#166534';
+            ctx.lineWidth = 0.1;
+            ctx.beginPath();
+            ctx.moveTo(0, -0.15);
+            ctx.lineTo(-0.15, -1.3);
+            ctx.stroke();
+
+            ctx.fillStyle = '#22C55E';
+            ctx.beginPath();
+            ctx.moveTo(-0.08, -0.8);
+            ctx.quadraticCurveTo(0.65, -0.5, 0.85, -0.95);
+            ctx.quadraticCurveTo(0.35, -1.15, -0.08, -0.8);
+            ctx.fill();
+
+            // Outer rose petals
+            for (let i = 0; i < 6; i++) {
+              ctx.save();
+              ctx.rotate((i * Math.PI) / 3);
+              ctx.fillStyle = i % 2 === 0 ? '#E11D48' : '#BE123C';
+              ctx.beginPath();
+              ctx.arc(0, 0.48, 0.46, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            }
+            // Inner spiral
+            ctx.fillStyle = '#FB7185';
+            ctx.beginPath();
+            ctx.arc(0, 0.05, 0.42, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#881337';
+            ctx.lineWidth = 0.055;
+            ctx.beginPath();
+            for (let t = 0; t < Math.PI * 4.2; t += 0.18) {
+              const r = 0.04 + t * 0.032;
+              const px = Math.cos(t) * r;
+              const py = 0.05 + Math.sin(t) * r;
+              if (t === 0) ctx.moveTo(px, py);
+              else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+            ctx.restore();
+          }
+        },
+        {
+          id: 'caythong',
+          name: 'Thông Đà Lạt', short: 'Thông',
+          tag: 'Rừng thông ngàn hoa',
+          draw(ctx) {
+            ctx.save();
+            // Trunk
+            ctx.fillStyle = '#78350F';
+            ctx.fillRect(-0.14, -1.25, 0.28, 0.5);
+            // Three pine tiers
+            const tiers = [
+              { y: -0.8, w: 0.95, h: 0.8, c: '#1B4332' },
+              { y: -0.25, w: 0.78, h: 0.78, c: '#2D6A4F' },
+              { y: 0.3, w: 0.58, h: 0.85, c: '#40916C' }
+            ];
+            tiers.forEach(t => {
+              ctx.fillStyle = t.c;
+              ctx.beginPath();
+              ctx.moveTo(0, t.y + t.h);
+              ctx.lineTo(-t.w, t.y);
+              ctx.lineTo(t.w, t.y);
+              ctx.closePath();
+              ctx.fill();
+            });
+            // Bright red ornament / flower on upper right branch (asymmetry cue!)
+            ctx.fillStyle = '#F43F5E';
+            ctx.beginPath();
+            ctx.arc(0.42, -0.05, 0.18, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#FDE047';
+            ctx.beginPath();
+            ctx.arc(0.42, -0.05, 0.07, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        },
+        {
+          id: 'buom',
+          name: 'Bướm Cao Nguyên', short: 'Bướm',
+          tag: 'Nhận diện hướng tốt',
+          draw(ctx) {
+            ctx.save();
+            // Asymmetric side-view flying butterfly (facing right-up)
+            // Upper wing
+            ctx.fillStyle = '#F97316';
+            ctx.strokeStyle = '#9A3412';
+            ctx.lineWidth = 0.04;
+            ctx.beginPath();
+            ctx.moveTo(-0.1, 0.05);
+            ctx.bezierCurveTo(-0.95, 1.15, -0.1, 1.35, 0.45, 0.65);
+            ctx.quadraticCurveTo(0.25, 0.25, -0.1, 0.05);
+            ctx.fill();
+            ctx.stroke();
+
+            // Lower wing
+            ctx.fillStyle = '#FBBF24';
+            ctx.beginPath();
+            ctx.moveTo(-0.15, -0.05);
+            ctx.bezierCurveTo(-1.05, 0.1, -0.9, -0.95, -0.15, -0.75);
+            ctx.quadraticCurveTo(0.05, -0.45, -0.15, -0.05);
+            ctx.fill();
+            ctx.stroke();
+
+            // Wing spot
+            ctx.fillStyle = '#FFFBEB';
+            ctx.beginPath();
+            ctx.arc(-0.35, 0.62, 0.15, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Body & antennae pointing top-right
+            ctx.strokeStyle = '#1F2937';
+            ctx.lineWidth = 0.11;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(-0.35, -0.55);
+            ctx.lineTo(0.42, 0.32);
+            ctx.stroke();
+
+            ctx.lineWidth = 0.04;
+            ctx.beginPath();
+            ctx.moveTo(0.42, 0.32);
+            ctx.quadraticCurveTo(0.75, 0.65, 0.92, 0.55);
+            ctx.moveTo(0.42, 0.32);
+            ctx.quadraticCurveTo(0.6, 0.78, 0.72, 0.85);
+            ctx.stroke();
+            ctx.restore();
+          }
+        },
+        {
+          id: 'thocam',
+          name: 'Cờ Thổ Cẩm', short: 'Thổ Cẩm',
+          tag: 'Tam giác bất đối xứng',
+          draw(ctx) {
+            ctx.save();
+            // Asymmetric triangle flag ABC with brocade stripes
+            ctx.fillStyle = '#DC2626';
+            ctx.strokeStyle = '#7F1D1D';
+            ctx.lineWidth = 0.05;
+            ctx.beginPath();
+            ctx.moveTo(-0.85, -0.85);
+            ctx.lineTo(1.05, -0.45);
+            ctx.lineTo(-0.45, 1.05);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Inner geometric pattern
+            ctx.fillStyle = '#FACC15';
+            ctx.beginPath();
+            ctx.moveTo(-0.52, -0.45);
+            ctx.lineTo(0.32, -0.25);
+            ctx.lineTo(-0.32, 0.42);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = '#1E293B';
+            ctx.beginPath();
+            ctx.arc(-0.22, -0.12, 0.14, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        },
+        {
+          id: 'chuf',
+          name: 'Chữ F Hoa Văn', short: 'Chữ F',
+          tag: 'Chuẩn kiểm tra lật/quay',
+          draw(ctx) {
+            ctx.save();
+            // Stylized floral F — gold standard in geometry for testing reflection vs rotation
+            ctx.fillStyle = '#0D9488';
+            ctx.strokeStyle = '#115E59';
+            ctx.lineWidth = 0.045;
+            ctx.beginPath();
+            ctx.moveTo(-0.55, -1.0);
+            ctx.lineTo(-0.55, 1.05);
+            ctx.lineTo(0.85, 1.05);
+            ctx.lineTo(0.85, 0.65);
+            ctx.lineTo(-0.12, 0.65);
+            ctx.lineTo(-0.12, 0.18);
+            ctx.lineTo(0.58, 0.18);
+            ctx.lineTo(0.58, -0.2);
+            ctx.lineTo(-0.12, -0.2);
+            ctx.lineTo(-0.12, -1.0);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Little pink flower at top-right corner of F
+            ctx.fillStyle = '#F43F5E';
+            ctx.beginPath();
+            ctx.arc(0.82, 0.85, 0.2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#FEF08A';
+            ctx.beginPath();
+            ctx.arc(0.82, 0.85, 0.07, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        },
+        {
+          id: 'caphe',
+          name: 'Cà Phê Đà Lạt',
+          short: 'Cà Phê',
+          tag: 'Hương vị cao nguyên',
+          draw(ctx) {
+            ctx.save();
+            // Saucer
+            ctx.fillStyle = '#E5E7EB';
+            ctx.strokeStyle = '#6B7280';
+            ctx.lineWidth = 0.04;
+            ctx.beginPath();
+            ctx.ellipse(-0.05, -0.82, 0.95, 0.2, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Handle on the right (asymmetry cue)
+            ctx.strokeStyle = '#92400E';
+            ctx.lineWidth = 0.14;
+            ctx.beginPath();
+            ctx.arc(0.5, -0.2, 0.34, -Math.PI * 0.48, Math.PI * 0.48, false);
+            ctx.stroke();
+
+            // Cup body
+            ctx.fillStyle = '#FEF3C7';
+            ctx.strokeStyle = '#92400E';
+            ctx.lineWidth = 0.05;
+            ctx.beginPath();
+            ctx.moveTo(-0.62, 0.28);
+            ctx.lineTo(0.52, 0.28);
+            ctx.quadraticCurveTo(0.46, -0.78, -0.05, -0.78);
+            ctx.quadraticCurveTo(-0.56, -0.78, -0.62, 0.28);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Espresso surface
+            ctx.fillStyle = '#451A03';
+            ctx.beginPath();
+            ctx.ellipse(-0.05, 0.28, 0.55, 0.14, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Coffee bean emblem on cup
+            ctx.fillStyle = '#78350F';
+            ctx.beginPath();
+            ctx.ellipse(-0.05, -0.24, 0.18, 0.25, 0.35, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#FEF3C7';
+            ctx.lineWidth = 0.035;
+            ctx.beginPath();
+            ctx.moveTo(-0.12, -0.44);
+            ctx.quadraticCurveTo(-0.02, -0.24, 0.03, -0.04);
+            ctx.stroke();
+
+            // Rising steam wisps
+            ctx.strokeStyle = '#D97706';
+            ctx.lineWidth = 0.06;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(-0.22, 0.52);
+            ctx.quadraticCurveTo(-0.36, 0.8, -0.12, 1.06);
+            ctx.moveTo(0.14, 0.56);
+            ctx.quadraticCurveTo(0.32, 0.84, 0.16, 1.12);
+            ctx.stroke();
+            ctx.restore();
+          }
+        },
+        {
+          id: 'tra',
+          name: 'Trà Đà Lạt',
+          short: 'Trà',
+          tag: 'Phố Trà - Rượu vang',
+          draw(ctx) {
+            ctx.save();
+            // Left handle
+            ctx.strokeStyle = '#065F46';
+            ctx.lineWidth = 0.12;
+            ctx.beginPath();
+            ctx.arc(-0.62, -0.22, 0.36, Math.PI * 0.55, Math.PI * 1.45, false);
+            ctx.stroke();
+
+            // Right spout curving up-right (strong orientation cue)
+            ctx.fillStyle = '#059669';
+            ctx.strokeStyle = '#064E3B';
+            ctx.lineWidth = 0.045;
+            ctx.beginPath();
+            ctx.moveTo(0.45, -0.45);
+            ctx.quadraticCurveTo(0.95, -0.25, 1.08, 0.36);
+            ctx.lineTo(0.88, 0.42);
+            ctx.quadraticCurveTo(0.75, 0.0, 0.42, -0.08);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Teapot body
+            ctx.fillStyle = '#10B981';
+            ctx.beginPath();
+            ctx.ellipse(-0.05, -0.28, 0.66, 0.56, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Lid & knob
+            ctx.fillStyle = '#34D399';
+            ctx.beginPath();
+            ctx.ellipse(-0.05, 0.28, 0.38, 0.13, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#065F46';
+            ctx.beginPath();
+            ctx.arc(-0.05, 0.46, 0.11, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Tea leaf emblem
+            ctx.fillStyle = '#FEF08A';
+            ctx.beginPath();
+            ctx.moveTo(-0.28, -0.45);
+            ctx.quadraticCurveTo(-0.05, -0.02, 0.22, -0.2);
+            ctx.quadraticCurveTo(0.05, -0.58, -0.28, -0.45);
+            ctx.fill();
+            ctx.restore();
+          }
+        },
+        {
+          id: 'jazz',
+          name: 'Nhạc Jazz',
+          short: 'Nhạc Jazz',
+          tag: 'Vietnam Jazz Festival',
+          draw(ctx) {
+            ctx.save();
+            // Golden Saxophone silhouette
+            ctx.strokeStyle = '#B45309';
+            ctx.fillStyle = '#F59E0B';
+            ctx.lineWidth = 0.05;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Mouthpiece & neck (top-left)
+            ctx.strokeStyle = '#1F2937';
+            ctx.lineWidth = 0.1;
+            ctx.beginPath();
+            ctx.moveTo(-0.88, 0.95);
+            ctx.lineTo(-0.56, 0.92);
+            ctx.stroke();
+
+            // Main brass tube curving down into U-bend and bell on right
+            ctx.strokeStyle = '#D97706';
+            ctx.lineWidth = 0.22;
+            ctx.beginPath();
+            ctx.moveTo(-0.56, 0.92);
+            ctx.quadraticCurveTo(-0.28, 0.85, -0.25, 0.42);
+            ctx.lineTo(-0.08, -0.68);
+            ctx.quadraticCurveTo(0.05, -1.08, 0.45, -0.78);
+            ctx.lineTo(0.68, -0.15);
+            ctx.stroke();
+
+            // Inner bright gold highlight
+            ctx.strokeStyle = '#FDE047';
+            ctx.lineWidth = 0.08;
+            ctx.stroke();
+
+            // Flared saxophone bell
+            ctx.fillStyle = '#F59E0B';
+            ctx.strokeStyle = '#92400E';
+            ctx.lineWidth = 0.045;
+            ctx.beginPath();
+            ctx.ellipse(0.72, -0.05, 0.34, 0.18, -0.45, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#78350F';
+            ctx.beginPath();
+            ctx.ellipse(0.73, -0.03, 0.22, 0.1, -0.45, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Musical note floating top-right
+            ctx.fillStyle = '#D84B7A';
+            ctx.strokeStyle = '#D84B7A';
+            ctx.lineWidth = 0.07;
+            ctx.beginPath();
+            ctx.ellipse(0.52, 0.56, 0.14, 0.1, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(0.63, 0.58);
+            ctx.lineTo(0.63, 1.08);
+            ctx.lineTo(0.95, 0.95);
+            ctx.stroke();
+            ctx.restore();
+          }
+        },
+        {
+          id: 'thocam_dt',
+          name: 'Hoa Văn Thổ Cẩm',
+          short: 'Thổ Cẩm',
+          tag: 'Lễ hội Văn hóa Thổ cẩm',
+          draw(ctx) {
+            ctx.save();
+            // Woven brocade scarf / panel with asymmetric bottom-right tassels
+            ctx.fillStyle = '#1E293B';
+            ctx.strokeStyle = '#0F172A';
+            ctx.lineWidth = 0.05;
+            ctx.beginPath();
+            ctx.moveTo(-0.78, 0.85);
+            ctx.lineTo(0.62, 0.85);
+            ctx.lineTo(0.62, -0.72);
+            ctx.lineTo(-0.78, -0.72);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Crimson woven top & bottom bands
+            ctx.fillStyle = '#DC2626';
+            ctx.fillRect(-0.76, 0.46, 1.36, 0.24);
+            ctx.fillRect(-0.76, -0.58, 1.36, 0.24);
+
+            // Golden brocade diamond center
+            ctx.fillStyle = '#FACC15';
+            ctx.beginPath();
+            ctx.moveTo(-0.08, 0.38);
+            ctx.lineTo(0.36, 0.06);
+            ctx.lineTo(-0.08, -0.26);
+            ctx.lineTo(-0.52, 0.06);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = '#DC2626';
+            ctx.beginPath();
+            ctx.moveTo(-0.08, 0.22);
+            ctx.lineTo(0.14, 0.06);
+            ctx.lineTo(-0.08, -0.1);
+            ctx.lineTo(-0.3, 0.06);
+            ctx.closePath();
+            ctx.fill();
+
+            // White zigzag stitch
+            ctx.strokeStyle = '#F8FAFC';
+            ctx.lineWidth = 0.045;
+            ctx.beginPath();
+            ctx.moveTo(-0.7, 0.58);
+            ctx.lineTo(-0.45, 0.66);
+            ctx.lineTo(-0.2, 0.5);
+            ctx.lineTo(0.05, 0.66);
+            ctx.lineTo(0.3, 0.5);
+            ctx.lineTo(0.55, 0.66);
+            ctx.stroke();
+
+            // Asymmetric decorative tassel hanging on the right side
+            ctx.strokeStyle = '#F59E0B';
+            ctx.lineWidth = 0.06;
+            ctx.beginPath();
+            ctx.moveTo(0.62, 0.3);
+            ctx.quadraticCurveTo(0.95, 0.15, 0.92, -0.35);
+            ctx.stroke();
+            ctx.fillStyle = '#EF4444';
+            ctx.beginPath();
+            ctx.moveTo(0.92, -0.28);
+            ctx.lineTo(0.75, -0.82);
+            ctx.lineTo(1.08, -0.82);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+          }
+        }
+      ];
+
+      // =========================================================================
+      // 2. APP STATE
+      // =========================================================================
+      const state = {
+        activeTab: 'translation', // translation | axial | central | rotation | homothety | tessellation
+        motifId: 'daquy',
+        showGrid: true,
+        showGuides: true,
+        // Origin figure position in math coordinates (units)
+        figPos: { x: -3.5, y: 1.5 },
+        figScale: 1.0,
+        // Animation state
+        animating: false,
+        animT: 1, // 0 -> 1
+        animRaf: null,
+        // Per-transformation parameters
+        translation: { vx: 6.5, vy: -2.0, repeat: 1 },
+        axial: { angleDeg: 90, offset: 0 }, // line passing through (offset*cos(a+90), offset*sin(a+90)) with direction angleDeg
+        central: { ix: 0.5, iy: 0.0 },
+        rotation: { ox: 0.0, oy: 0.0, angleDeg: 90, rosetteCount: 1 },
+        homothety: { ix: -1.5, iy: -1.0, k: 1.8, cascade: false },
+        // Dragging state
+        dragging: null, // 'figure' | 'vecTip' | 'center' | 'axisPoint'
+        dragOffset: { x: 0, y: 0 },
+        // Tessellation state
+        tess: {
+          mode: 'translation', // translation | rotation90 | glide | hex120
+          baseShape: 'square', // square (1:1) | rect (3:2)
+          step: 1, // 1: single base tile | 2: first strip/cluster | 3: full tessellation
+          stepAnimT: 1,
+          stepRaf: null,
+          // Edge control points (normalized relative to edge [0..1] along edge, perp offset)
+          edgeA: [
+            { t: 0.20, d: 0.20 },
+            { t: 0.42, d: -0.06 },
+            { t: 0.64, d: 0.22 },
+            { t: 0.82, d: 0.12 }
+          ],
+          edgeB: [
+            { t: 0.20, d: 0.16 },
+            { t: 0.42, d: -0.14 },
+            { t: 0.64, d: 0.20 },
+            { t: 0.82, d: -0.08 }
+          ],
+          edgeC: [ // used for hex120 3rd edge
+            { t: 0.35, d: 0.16 },
+            { t: 0.68, d: -0.15 }
+          ],
+          paletteIdx: 0,
+          density: 6,
+          stamp: 'flower',
+          showStroke: true,
+          highlightBase: false,
+          draggingNode: null
+        }
+      };
+
+      const PALETTES = [
+        { name: 'Dã Quỳ & Thông Xanh', colors: ['#FACC15', '#2D6A4F', '#F59E0B', '#D8F3DC'], stroke: '#1B4332' },
+        { name: 'Mai Anh Đào', colors: ['#F9A8D4', '#FFF1F2', '#EC4899', '#FBCFE8'], stroke: '#831843' },
+        { name: 'Cẩm Tú Cầu', colors: ['#818CF8', '#93C5FD', '#C4B5FD', '#E0F2FE'], stroke: '#312E81' },
+        { name: 'Thổ Cẩm Tây Nguyên', colors: ['#DC2626', '#F59E0B', '#1F2937', '#FEF3C7'], stroke: '#111827' },
+        { name: 'Đa Sắc Festival XI', colors: ['#F43F5E', '#FACC15', '#10B981', '#6366F1'], stroke: '#1E293B' }
+      ];
+
+      // =========================================================================
+      // 3. DOM REFERENCES & TOAST
+      // =========================================================================
+      const elTabBar = document.getElementById('tab-bar');
+      const elWsTransform = document.getElementById('workspace-transform');
+      const elWsTess = document.getElementById('workspace-tessellation');
+      const elMotifGallery = document.getElementById('motif-gallery');
+      const elActiveMotifLabel = document.getElementById('active-motif-label');
+      const elControlTitle = document.getElementById('control-title');
+      const elTransformControls = document.getElementById('transform-controls');
+      const elMathBadge = document.getElementById('math-badge');
+      const elMathFormula = document.getElementById('math-formula');
+      const elMathNote = document.getElementById('math-note');
+      const elStageHint = document.getElementById('stage-hint');
+      const elCoordReadout = document.getElementById('coord-readout');
+
+      const canvas = document.getElementById('transform-canvas');
+      const ctx = canvas.getContext('2d');
+      const canvasWrap = document.getElementById('transform-canvas-wrap');
+
+      const tileCanvas = document.getElementById('tile-editor-canvas');
+      const tileCtx = tileCanvas.getContext('2d');
+      const tessCanvas = document.getElementById('tess-canvas');
+      const tessCtx = tessCanvas.getContext('2d');
+      const tessWrap = document.getElementById('tess-canvas-wrap');
+
+      let toastTimer = null;
+      function showToast(msg) {
+        const el = document.getElementById('toast');
+        document.getElementById('toast-msg').textContent = msg;
+        el.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+      }
+
+      // =========================================================================
+      // 4. COORDINATE SYSTEM HELPERS (MATH <-> CANVAS)
+      // =========================================================================
+      let viewScale = 36; // pixels per math unit
+      let viewOrigin = { x: 400, y: 300 };
+
+      function resizeTransformCanvas() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rect = canvasWrap.getBoundingClientRect();
+        if (rect.width < 10 || rect.height < 10) return;
+        canvas.width = Math.round(rect.width * dpr);
+        canvas.height = Math.round(rect.height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        viewOrigin.x = rect.width / 2;
+        viewOrigin.y = rect.height / 2;
+        viewScale = Math.max(24, Math.min(44, Math.min(rect.width, rect.height) / 14));
+        renderTransformStage();
+      }
+
+      function mathToScreen(mx, my) {
+        return {
+          x: viewOrigin.x + mx * viewScale,
+          y: viewOrigin.y - my * viewScale
+        };
+      }
+
+      function screenToMath(sx, sy) {
+        return {
+          x: (sx - viewOrigin.x) / viewScale,
+          y: (viewOrigin.y - sy) / viewScale
+        };
+      }
+
+      // Helper to apply a 2D affine matrix in math space onto Canvas context
+      // Math point (x, y) -> transformed (a*x + c*y + e, b*x + d*y + f)
+      // Then mapped to screen: sx = ox + X*S, sy = oy - Y*S
+      function drawMotifWithMatrix(targetCtx, motifObj, mat, isImage) {
+        // mat = { a, b, c, d, e, f } in math space
+        // Local motif point (lx, ly) -> math (mx, my) -> screen (sx, sy)
+        // sx = ox + S*(a*lx + c*ly + e)
+        // sy = oy - S*(b*lx + d*ly + f)
+        // Canvas setTransform/transform uses: x' = m11*x + m21*y + dx, y' = m12*x + m22*y + dy
+        targetCtx.save();
+        targetCtx.transform(
+          viewScale * mat.a,
+          -viewScale * mat.b,
+          viewScale * mat.c,
+          -viewScale * mat.d,
+          viewOrigin.x + viewScale * mat.e,
+          viewOrigin.y - viewScale * mat.f
+        );
+        motifObj.draw(targetCtx, isImage);
+        targetCtx.restore();
+      }
+
+      // =========================================================================
+      // 5. BUILD MOTIF GALLERY WITH MINI CANVAS PREVIEWS
+      // =========================================================================
+      function buildMotifGallery() {
+        elMotifGallery.innerHTML = '';
+        MOTIFS.forEach(m => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.dataset.motif = m.id;
+          btn.className = 'motif-card rounded-xl border border-gray-200 bg-[#FAF7F2] p-1.5 flex flex-col items-center gap-1 text-center' +
+            (m.id === state.motifId ? ' selected' : '');
+
+          const mini = document.createElement('canvas');
+          mini.width = 72;
+          mini.height = 72;
+          mini.className = 'w-11 h-11';
+          const mctx = mini.getContext('2d');
+          mctx.save();
+          mctx.translate(36, 36);
+          mctx.scale(24, -24);
+          m.draw(mctx, false);
+          mctx.restore();
+
+          const lbl = document.createElement('span');
+          lbl.className = 'text-[10px] font-semibold text-gray-700 leading-tight line-clamp-1';
+          btn.title = m.name; lbl.textContent = m.short || m.name;
+
+          btn.appendChild(mini);
+          btn.appendChild(lbl);
+          btn.addEventListener('click', () => {
+            state.motifId = m.id;
+            elActiveMotifLabel.textContent = m.name;
+            elMotifGallery.querySelectorAll('.motif-card').forEach(c => {
+              c.classList.toggle('selected', c.dataset.motif === m.id);
+            });
+            renderTransformStage();
+          });
+          elMotifGallery.appendChild(btn);
+        });
+      }
+
+      // =========================================================================
+      // 6. DYNAMIC CONTROLS PER TRANSFORMATION TAB
+      // =========================================================================
+      function renderControlPanel() {
+        const tab = state.activeTab;
+        if (tab === 'translation') {
+          elControlTitle.textContent = 'Thông số Phép tịnh tiến';
+          elMathBadge.textContent = 'Phép dời hình';
+          elMathBadge.className = 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-[10px]';
+          elMathFormula.textContent = `T_v(M) = M'  ⇔  x' = x + (${state.translation.vx.toFixed(1)}), y' = y + (${state.translation.vy.toFixed(1)})`;
+          elMathNote.textContent = 'Phép tịnh tiến bảo toàn khoảng cách, góc, hướng và biến đường thẳng thành đường thẳng song song hoặc trùng với nó. Ứng dụng: đoàn diễu hành Carnival hoa.';
+          elStageHint.textContent = 'Kéo hình mẫu H hoặc kéo đầu mũi tên vectơ v trực tiếp trên mặt phẳng';
+
+          elTransformControls.innerHTML = `
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-gray-700">Hoành độ vectơ v (a)</span>
+                <span id="val-vx" class="font-mono font-bold text-[#1B4332]">${state.translation.vx.toFixed(1)}</span>
+              </div>
+              <input id="sl-vx" type="range" min="-8" max="8" step="0.5" value="${state.translation.vx}" class="w-full" />
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-gray-700">Tung độ vectơ v (b)</span>
+                <span id="val-vy" class="font-mono font-bold text-[#1B4332]">${state.translation.vy.toFixed(1)}</span>
+              </div>
+              <input id="sl-vy" type="range" min="-6" max="6" step="0.5" value="${state.translation.vy}" class="w-full" />
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-gray-700">Số lần tịnh tiến liên tiếp (Dải hoa)</span>
+                <span id="val-rep" class="font-mono font-bold text-[#D84B7A]">${state.translation.repeat} ảnh</span>
+              </div>
+              <input id="sl-rep" type="range" min="1" max="5" step="1" value="${state.translation.repeat}" class="w-full" />
+            </div>
+          `;
+          document.getElementById('sl-vx').addEventListener('input', e => {
+            state.translation.vx = parseFloat(e.target.value);
+            document.getElementById('val-vx').textContent = state.translation.vx.toFixed(1);
+            updateFormulaOnly();
+            renderTransformStage();
+          });
+          document.getElementById('sl-vy').addEventListener('input', e => {
+            state.translation.vy = parseFloat(e.target.value);
+            document.getElementById('val-vy').textContent = state.translation.vy.toFixed(1);
+            updateFormulaOnly();
+            renderTransformStage();
+          });
+          document.getElementById('sl-rep').addEventListener('input', e => {
+            state.translation.repeat = parseInt(e.target.value, 10);
+            document.getElementById('val-rep').textContent = state.translation.repeat + ' ảnh';
+            renderTransformStage();
+          });
+        } else if (tab === 'axial') {
+          elControlTitle.textContent = 'Thông số Đối xứng trục';
+          elMathBadge.textContent = 'Phép dời hình (Đổi hướng)';
+          elMathBadge.className = 'px-2 py-0.5 rounded-full bg-pink-100 text-pink-800 font-semibold text-[10px]';
+          elMathNote.textContent = 'Trục d là đường trung trực của đoạn MM\'. Phép đối xứng trục bảo toàn khoảng cách nhưng đảo ngược hướng (như soi gương bên Hồ Xuân Hương).';
+          elStageHint.textContent = 'Kéo hình mẫu H hoặc kéo tay cầm màu hồng trên trục đối xứng d';
+
+          elTransformControls.innerHTML = `
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-gray-700">Góc nghiêng trục d</span>
+                <span id="val-ax-ang" class="font-mono font-bold text-[#1B4332]">${state.axial.angleDeg}°</span>
+              </div>
+              <input id="sl-ax-ang" type="range" min="0" max="180" step="5" value="${state.axial.angleDeg}" class="w-full" />
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-gray-700">Dịch chuyển trục d</span>
+                <span id="val-ax-off" class="font-mono font-bold text-[#1B4332]">${state.axial.offset.toFixed(1)}</span>
+              </div>
+              <input id="sl-ax-off" type="range" min="-4" max="4" step="0.5" value="${state.axial.offset}" class="w-full" />
+            </div>
+            <div class="grid grid-cols-4 gap-1.5 pt-1">
+              <button type="button" data-ax="90,0" class="ax-preset py-1.5 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">Trục Oy</button>
+              <button type="button" data-ax="0,0" class="ax-preset py-1.5 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">Trục Ox</button>
+              <button type="button" data-ax="45,0" class="ax-preset py-1.5 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">y = x</button>
+              <button type="button" data-ax="135,0" class="ax-preset py-1.5 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">y = -x</button>
+            </div>
+          `;
+          document.getElementById('sl-ax-ang').addEventListener('input', e => {
+            state.axial.angleDeg = parseFloat(e.target.value);
+            document.getElementById('val-ax-ang').textContent = state.axial.angleDeg + '°';
+            updateFormulaOnly();
+            renderTransformStage();
+          });
+          document.getElementById('sl-ax-off').addEventListener('input', e => {
+            state.axial.offset = parseFloat(e.target.value);
+            document.getElementById('val-ax-off').textContent = state.axial.offset.toFixed(1);
+            updateFormulaOnly();
+            renderTransformStage();
+          });
+          elTransformControls.querySelectorAll('.ax-preset').forEach(b => {
+            b.addEventListener('click', () => {
+              const [ang, off] = b.dataset.ax.split(',').map(Number);
+              state.axial.angleDeg = ang;
+              state.axial.offset = off;
+              document.getElementById('sl-ax-ang').value = ang;
+              document.getElementById('sl-ax-off').value = off;
+              document.getElementById('val-ax-ang').textContent = ang + '°';
+              document.getElementById('val-ax-off').textContent = off.toFixed(1);
+              updateFormulaOnly();
+              renderTransformStage();
+            });
+          });
+          updateFormulaOnly();
+        } else if (tab === 'central') {
+          elControlTitle.textContent = 'Thông số Đối xứng tâm';
+          elMathBadge.textContent = 'Phép dời hình (= Quay 180°)';
+          elMathBadge.className = 'px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold text-[10px]';
+          elMathNote.textContent = 'Điểm I là trung điểm của đoạn thẳng MM\'. Phép đối xứng tâm I tương đương với phép quay tâm I góc 180°.';
+          elStageHint.textContent = 'Kéo hình mẫu H hoặc kéo tâm đối xứng I (chấm vàng cam) trên mặt phẳng';
+
+          elTransformControls.innerHTML = `
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-gray-700">Hoành độ tâm I (x₀)</span>
+                <span id="val-cix" class="font-mono font-bold text-[#1B4332]">${state.central.ix.toFixed(1)}</span>
+              </div>
+              <input id="sl-cix" type="range" min="-5" max="5" step="0.5" value="${state.central.ix}" class="w-full" />
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-gray-700">Tung độ tâm I (y₀)</span>
+                <span id="val-ciy" class="font-mono font-bold text-[#1B4332]">${state.central.iy.toFixed(1)}</span>
+              </div>
+              <input id="sl-ciy" type="range" min="-4" max="4" step="0.5" value="${state.central.iy}" class="w-full" />
+            </div>
+            <button type="button" id="btn-central-origin" class="w-full py-1.5 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-xs font-semibold text-[#1B4332] cursor-pointer">
+              Đưa tâm I về gốc tọa độ O(0; 0)
+            </button>
+          `;
+          document.getElementById('sl-cix').addEventListener('input', e => {
+            state.central.ix = parseFloat(e.target.value);
+            document.getElementById('val-cix').textContent = state.central.ix.toFixed(1);
+            updateFormulaOnly();
+            renderTransformStage();
+          });
+          document.getElementById('sl-ciy').addEventListener('input', e => {
+            state.central.iy = parseFloat(e.target.value);
+            document.getElementById('val-ciy').textContent = state.central.iy.toFixed(1);
+            updateFormulaOnly();
+            renderTransformStage();
+          });
+          document.getElementById('btn-central-origin').addEventListener('click', () => {
+            state.central.ix = 0;
+            state.central.iy = 0;
+            document.getElementById('sl-cix').value = 0;
+            document.getElementById('sl-ciy').value = 0;
+            document.getElementById('val-cix').textContent = '0.0';
+            document.getElementById('val-ciy').textContent = '0.0';
+            updateFormulaOnly();
+            renderTransformStage();
+          });
+          updateFormulaOnly();
+        } else if (tab === 'rotation') {
+          elControlTitle.textContent = 'Thông số Phép quay';
+          elMathBadge.textContent = 'Phép dời hình (Giữ hướng)';
+          elMathBadge.className = 'px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 font-semibold text-[10px]';
+          elMathNote.textContent = 'OM\' = OM và góc lượng giác (OM, OM\') = φ. Góc dương quay ngược chiều kim đồng hồ. Tăng số cánh để tạo vòng hoa Festival!';
+          elStageHint.textContent = 'Kéo hình mẫu H hoặc kéo tâm quay O trực tiếp trên mặt phẳng';
+
+          elTransformControls.innerHTML = `
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-gray-700">Góc quay φ</span>
+                <span id="val-rot-ang" class="font-mono font-bold text-[#1B4332]">${state.rotation.angleDeg}°</span>
+              </div>
+              <input id="sl-rot-ang" type="range" min="-360" max="360" step="5" value="${state.rotation.angleDeg}" class="w-full" />
+            </div>
+            <div class="grid grid-cols-5 gap-1">
+              <button type="button" data-ang="-90" class="rot-preset py-1 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">-90°</button>
+              <button type="button" data-ang="60" class="rot-preset py-1 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">60°</button>
+              <button type="button" data-ang="90" class="rot-preset py-1 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">90°</button>
+              <button type="button" data-ang="120" class="rot-preset py-1 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">120°</button>
+              <button type="button" data-ang="180" class="rot-preset py-1 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">180°</button>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-gray-700">Tạo vòng hoa (Quay liên tiếp)</span>
+                <span id="val-rosette" class="font-mono font-bold text-[#D84B7A]">${state.rotation.rosetteCount} ảnh</span>
+              </div>
+              <input id="sl-rosette" type="range" min="1" max="8" step="1" value="${state.rotation.rosetteCount}" class="w-full" />
+            </div>
+          `;
+          document.getElementById('sl-rot-ang').addEventListener('input', e => {
+            state.rotation.angleDeg = parseFloat(e.target.value);
+            document.getElementById('val-rot-ang').textContent = state.rotation.angleDeg + '°';
+            updateFormulaOnly();
+            renderTransformStage();
+          });
+          document.getElementById('sl-rosette').addEventListener('input', e => {
+            state.rotation.rosetteCount = parseInt(e.target.value, 10);
+            document.getElementById('val-rosette').textContent = state.rotation.rosetteCount + ' ảnh';
+            renderTransformStage();
+          });
+          elTransformControls.querySelectorAll('.rot-preset').forEach(b => {
+            b.addEventListener('click', () => {
+              const ang = parseFloat(b.dataset.ang);
+              state.rotation.angleDeg = ang;
+              document.getElementById('sl-rot-ang').value = ang;
+              document.getElementById('val-rot-ang').textContent = ang + '°';
+              updateFormulaOnly();
+              renderTransformStage();
+            });
+          });
+          updateFormulaOnly();
+        } else if (tab === 'homothety') {
+          elControlTitle.textContent = 'Thông số Phép vị tự';
+          elMathBadge.textContent = 'Phép đồng dạng tỉ số |k|';
+          elMathBadge.className = 'px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 font-semibold text-[10px]';
+          elMathNote.textContent = 'Vectơ IM\' = k·IM. Khi k > 0 ảnh cùng phía với H; khi k < 0 ảnh ngược phía và lật 180°. Tỉ số diện tích bằng k².';
+          elStageHint.textContent = 'Kéo hình mẫu H hoặc kéo tâm vị tự I trực tiếp trên mặt phẳng';
+
+          elTransformControls.innerHTML = `
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-gray-700">Tỉ số vị tự k</span>
+                <span id="val-hom-k" class="font-mono font-bold text-[#1B4332]">k = ${state.homothety.k.toFixed(1)}</span>
+              </div>
+              <input id="sl-hom-k" type="range" min="-2.5" max="2.5" step="0.1" value="${state.homothety.k}" class="w-full" />
+            </div>
+            <div class="grid grid-cols-5 gap-1">
+              <button type="button" data-k="-1.5" class="hom-preset py-1 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">-1.5</button>
+              <button type="button" data-k="-1" class="hom-preset py-1 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">-1</button>
+              <button type="button" data-k="0.5" class="hom-preset py-1 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">0.5</button>
+              <button type="button" data-k="1.5" class="hom-preset py-1 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">1.5</button>
+              <button type="button" data-k="2" class="hom-preset py-1 rounded-lg bg-[#F3EFE6] hover:bg-[#E7E0D0] text-[11px] font-semibold text-[#1B4332] cursor-pointer">2.0</button>
+            </div>
+            <label class="inline-flex items-center gap-2 text-xs text-gray-700 pt-1 cursor-pointer select-none">
+              <input id="chk-hom-cascade" type="checkbox" ${state.homothety.cascade ? 'checked' : ''} class="rounded text-[#1B4332]" />
+              <span>Hiệu ứng chiều sâu (3 lớp vị tự liên tiếp)</span>
+            </label>
+          `;
+          document.getElementById('sl-hom-k').addEventListener('input', e => {
+            let kVal = parseFloat(e.target.value);
+            if (Math.abs(kVal) < 0.05) kVal = 0.2;
+            state.homothety.k = kVal;
+            document.getElementById('val-hom-k').textContent = 'k = ' + state.homothety.k.toFixed(1);
+            updateFormulaOnly();
+            renderTransformStage();
+          });
+          document.getElementById('chk-hom-cascade').addEventListener('change', e => {
+            state.homothety.cascade = e.target.checked;
+            renderTransformStage();
+          });
+          elTransformControls.querySelectorAll('.hom-preset').forEach(b => {
+            b.addEventListener('click', () => {
+              const kVal = parseFloat(b.dataset.k);
+              state.homothety.k = kVal;
+              document.getElementById('sl-hom-k').value = kVal;
+              document.getElementById('val-hom-k').textContent = 'k = ' + kVal.toFixed(1);
+              updateFormulaOnly();
+              renderTransformStage();
+            });
+          });
+          updateFormulaOnly();
+        }
+      }
+
+      function updateFormulaOnly() {
+        const tab = state.activeTab;
+        if (tab === 'translation') {
+          elMathFormula.textContent = `T_v(M) = M'  |  v = (${state.translation.vx.toFixed(1)}; ${state.translation.vy.toFixed(1)})`;
+        } else if (tab === 'axial') {
+          const deg = state.axial.angleDeg;
+          const off = state.axial.offset;
+          if (deg === 90 && off === 0) elMathFormula.textContent = `Đ_Oy(M):  x' = -x,  y' = y`;
+          else if (deg === 0 && off === 0) elMathFormula.textContent = `Đ_Ox(M):  x' = x,  y' = -y`;
+          else if (deg === 45 && off === 0) elMathFormula.textContent = `Đ_(y=x)(M):  x' = y,  y' = x`;
+          else if (deg === 135 && off === 0) elMathFormula.textContent = `Đ_(y=-x)(M):  x' = -y,  y' = -x`;
+          else elMathFormula.textContent = `Đ_d(M) = M'  |  Trục d nghiêng ${deg}°, dịch ${off.toFixed(1)}`;
+        } else if (tab === 'central') {
+          elMathFormula.textContent = `Đ_I(M): x' = ${(2 * state.central.ix).toFixed(1)} - x,  y' = ${(2 * state.central.iy).toFixed(1)} - y`;
+        } else if (tab === 'rotation') {
+          elMathFormula.textContent = `Q_(O, ${state.rotation.angleDeg}°)(M) = M'  |  O(${state.rotation.ox.toFixed(1)}; ${state.rotation.oy.toFixed(1)})`;
+        } else if (tab === 'homothety') {
+          const k = state.homothety.k;
+          elMathFormula.textContent = `V_(I, ${k.toFixed(1)}):  IM' = ${k.toFixed(1)}·IM  |  S'/S = ${(k * k).toFixed(2)}`;
+        }
+      }
+
+      // =========================================================================
+      // 7. TRANSFORMATION MATH ENGINE & RENDERING
+      // =========================================================================
+      function getActiveMotif() {
+        return MOTIFS.find(m => m.id === state.motifId) || MOTIFS[0];
+      }
+
+      function drawGridAndAxes() {
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+        ctx.clearRect(0, 0, w, h);
+
+        if (!state.showGrid) return;
+
+        const minX = Math.floor(-viewOrigin.x / viewScale) - 1;
+        const maxX = Math.ceil((w - viewOrigin.x) / viewScale) + 1;
+        const minY = Math.floor((viewOrigin.y - h) / viewScale) - 1;
+        const maxY = Math.ceil(viewOrigin.y / viewScale) + 1;
+
+        // Grid lines
+        ctx.strokeStyle = '#EFECE4';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let x = minX; x <= maxX; x++) {
+          const sx = viewOrigin.x + x * viewScale;
+          ctx.moveTo(sx, 0);
+          ctx.lineTo(sx, h);
+        }
+        for (let y = minY; y <= maxY; y++) {
+          const sy = viewOrigin.y - y * viewScale;
+          ctx.moveTo(0, sy);
+          ctx.lineTo(w, sy);
+        }
+        ctx.stroke();
+
+        // Main Ox, Oy axes
+        ctx.strokeStyle = '#9CA3AF';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(0, viewOrigin.y);
+        ctx.lineTo(w, viewOrigin.y);
+        ctx.moveTo(viewOrigin.x, 0);
+        ctx.lineTo(viewOrigin.x, h);
+        ctx.stroke();
+
+        // Axis labels & ticks
+        ctx.fillStyle = '#6B7280';
+        ctx.font = '600 11px Inter, sans-serif';
+        ctx.fillText('x', w - 16, viewOrigin.y - 8);
+        ctx.fillText('y', viewOrigin.x + 8, 16);
+        ctx.fillText('O', viewOrigin.x - 14, viewOrigin.y + 14);
+
+        ctx.font = '500 10px Inter, sans-serif';
+        for (let x = minX; x <= maxX; x++) {
+          if (x === 0 || x % 2 !== 0) continue;
+          const sx = viewOrigin.x + x * viewScale;
+          ctx.fillText(String(x), sx - 4, viewOrigin.y + 13);
+        }
+        for (let y = minY; y <= maxY; y++) {
+          if (y === 0 || y % 2 !== 0) continue;
+          const sy = viewOrigin.y - y * viewScale;
+          ctx.fillText(String(y), viewOrigin.x + 6, sy + 4);
+        }
+      }
+
+      function drawArrow(x1, y1, x2, y2, color, width = 2.5, dashed = false) {
+        const s1 = mathToScreen(x1, y1);
+        const s2 = mathToScreen(x2, y2);
+        const dx = s2.x - s1.x;
+        const dy = s2.y - s1.y;
+        const len = Math.hypot(dx, dy);
+        if (len < 3) return;
+        const ang = Math.atan2(dy, dx);
+
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = width;
+        if (dashed) ctx.setLineDash([6, 5]);
+        ctx.beginPath();
+        ctx.moveTo(s1.x, s1.y);
+        ctx.lineTo(s2.x, s2.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        const head = 10;
+        ctx.beginPath();
+        ctx.moveTo(s2.x, s2.y);
+        ctx.lineTo(s2.x - head * Math.cos(ang - 0.38), s2.y - head * Math.sin(ang - 0.38));
+        ctx.lineTo(s2.x - head * Math.cos(ang + 0.38), s2.y - head * Math.sin(ang + 0.38));
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawControlPoint(mx, my, label, fillColor) {
+        const p = mathToScreen(mx, my);
+        ctx.save();
+        ctx.fillStyle = fillColor;
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 7.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#1F2937';
+        ctx.font = '700 12px Inter, sans-serif';
+        ctx.fillText(label, p.x + 11, p.y - 8);
+        ctx.restore();
+      }
+
+      function renderTransformStage() {
+        if (state.activeTab === 'tessellation') return;
+        drawGridAndAxes();
+
+        const motif = getActiveMotif();
+        const t = state.animT; // 0..1
+        const mx = state.figPos.x;
+        const my = state.figPos.y;
+        const s = state.figScale;
+
+        // Draw original figure H
+        drawMotifWithMatrix(ctx, motif, { a: s, b: 0, c: 0, d: s, e: mx, f: my }, false);
+
+        // Origin badge M
+        if (state.showGuides) {
+          const pm = mathToScreen(mx, my);
+          ctx.save();
+          ctx.fillStyle = '#1B4332';
+          ctx.beginPath();
+          ctx.arc(pm.x, pm.y, 4.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.font = '700 12px Inter, sans-serif';
+          ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 4; ctx.strokeText('M', pm.x - 18, pm.y - 12); ctx.fillText('M', pm.x - 18, pm.y - 12);
+          ctx.restore();
+        }
+
+        let imgX = mx;
+        let imgY = my;
+
+        if (state.activeTab === 'translation') {
+          const vx = state.translation.vx;
+          const vy = state.translation.vy;
+          const rep = state.translation.repeat;
+
+          // Draw reference vector v at bottom-left or from origin
+          const vBaseX = -5.5;
+          const vBaseY = -4.0;
+          drawArrow(vBaseX, vBaseY, vBaseX + vx, vBaseY + vy, '#059669', 3, false);
+          drawControlPoint(vBaseX + vx, vBaseY + vy, `v(${vx.toFixed(1)}; ${vy.toFixed(1)})`, '#059669');
+
+          for (let i = 1; i <= rep; i++) {
+            const curT = i === 1 ? t : Math.max(0, Math.min(1, t * rep - (i - 1)));
+            const dx = vx * ((i - 1) + curT);
+            const dy = vy * ((i - 1) + curT);
+            const tx = mx + dx;
+            const ty = my + dy;
+            if (i === 1) { imgX = tx; imgY = ty; }
+
+            if (state.showGuides) {
+              drawArrow(mx + vx * (i - 1), my + vy * (i - 1), tx, ty, '#D84B7A', 1.8, true);
+            }
+            ctx.save();
+            ctx.globalAlpha = i === 1 ? 1 : 0.78;
+            drawMotifWithMatrix(ctx, motif, { a: s, b: 0, c: 0, d: s, e: tx, f: ty }, true);
+            ctx.restore();
+          }
+        } else if (state.activeTab === 'axial') {
+          const rad = (state.axial.angleDeg * Math.PI) / 180;
+          const ux = Math.cos(rad);
+          const uy = Math.sin(rad);
+          // Normal vector n = (-uy, ux)
+          const nx = -uy;
+          const ny = ux;
+          // Point on axis d: P0 = offset * n
+          const p0x = state.axial.offset * nx;
+          const p0y = state.axial.offset * ny;
+
+          // Draw axis d
+          const d1 = mathToScreen(p0x - ux * 20, p0y - uy * 20);
+          const d2 = mathToScreen(p0x + ux * 20, p0y + uy * 20);
+          ctx.save();
+          ctx.strokeStyle = '#D84B7A';
+          ctx.lineWidth = 2.8;
+          ctx.beginPath();
+          ctx.moveTo(d1.x, d1.y);
+          ctx.lineTo(d2.x, d2.y);
+          ctx.stroke();
+          ctx.restore();
+
+          // Draggable handle on axis d
+          drawControlPoint(p0x + ux * 2.5, p0y + uy * 2.5, 'Trục d', '#D84B7A');
+
+          // Compute reflection of (mx, my) across axis d
+          const signedDist = (mx - p0x) * nx + (my - p0y) * ny;
+          const footX = mx - signedDist * nx;
+          const footY = my - signedDist * ny;
+          const refX = mx - 2 * signedDist * nx;
+          const refY = my - 2 * signedDist * ny;
+          imgX = mx + (refX - mx) * t;
+          imgY = my + (refY - my) * t;
+
+          // Reflection linear matrix across direction (ux, uy):
+          // R = [cos 2a, sin 2a; sin 2a, -cos 2a]
+          // For smooth animation t in [0,1], scale along normal by (1 - 2*t)!
+          const kNorm = 1 - 2 * t;
+          // Linear map: v -> (v·u)u + kNorm*(v·n)n
+          const mA = s * (ux * ux + kNorm * nx * nx);
+          const mB = s * (ux * uy + kNorm * nx * ny);
+          const mC = s * (uy * ux + kNorm * ny * nx);
+          const mD = s * (uy * uy + kNorm * ny * ny);
+
+          if (state.showGuides) {
+            const pm = mathToScreen(mx, my);
+            const pr = mathToScreen(imgX, imgY);
+            const pf = mathToScreen(footX, footY);
+            ctx.save();
+            ctx.strokeStyle = '#94A3B8';
+            ctx.lineWidth = 1.6;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(pm.x, pm.y);
+            ctx.lineTo(pr.x, pr.y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            // Foot point H on axis
+            ctx.fillStyle = '#D84B7A';
+            ctx.beginPath();
+            ctx.arc(pf.x, pf.y, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+
+          drawMotifWithMatrix(ctx, motif, { a: mA, b: mB, c: mC, d: mD, e: imgX, f: imgY }, true);
+        } else if (state.activeTab === 'central') {
+          const ix = state.central.ix;
+          const iy = state.central.iy;
+          const ang = Math.PI * t; // rotate 180 deg smoothly around I
+          const ca = Math.cos(ang);
+          const sa = Math.sin(ang);
+
+          const dx = mx - ix;
+          const dy = my - iy;
+          imgX = ix + dx * ca - dy * sa;
+          imgY = iy + dx * sa + dy * ca;
+
+          if (state.showGuides) {
+            const pm = mathToScreen(mx, my);
+            const pr = mathToScreen(imgX, imgY);
+            ctx.save();
+            ctx.strokeStyle = '#F59E0B';
+            ctx.lineWidth = 1.8;
+            ctx.setLineDash([6, 5]);
+            ctx.beginPath();
+            ctx.moveTo(pm.x, pm.y);
+            ctx.lineTo(pr.x, pr.y);
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          drawMotifWithMatrix(ctx, motif, { a: s * ca, b: s * sa, c: -s * sa, d: s * ca, e: imgX, f: imgY }, true);
+          drawControlPoint(ix, iy, `I(${ix.toFixed(1)}; ${iy.toFixed(1)})`, '#F59E0B');
+        } else if (state.activeTab === 'rotation') {
+          const ox = state.rotation.ox;
+          const oy = state.rotation.oy;
+          const baseRad = (state.rotation.angleDeg * Math.PI) / 180;
+          const count = state.rotation.rosetteCount;
+
+          const dx = mx - ox;
+          const dy = my - oy;
+          const radius = Math.hypot(dx, dy);
+
+          for (let i = 1; i <= count; i++) {
+            const stepRad = baseRad * i * t;
+            const ca = Math.cos(stepRad);
+            const sa = Math.sin(stepRad);
+            const rx = ox + dx * ca - dy * sa;
+            const ry = oy + dx * sa + dy * ca;
+            if (i === 1) { imgX = rx; imgY = ry; }
+
+            if (state.showGuides && i === 1 && radius > 0.1) {
+              const po = mathToScreen(ox, oy);
+              const pm = mathToScreen(mx, my);
+              const pr = mathToScreen(rx, ry);
+              ctx.save();
+              ctx.strokeStyle = '#6366F1';
+              ctx.lineWidth = 1.5;
+              ctx.setLineDash([5, 4]);
+              ctx.beginPath();
+              ctx.moveTo(po.x, po.y);
+              ctx.lineTo(pm.x, pm.y);
+              ctx.moveTo(po.x, po.y);
+              ctx.lineTo(pr.x, pr.y);
+              ctx.stroke();
+              ctx.setLineDash([]);
+
+              // Circular arc from M to M'
+              const startA = Math.atan2(-(my - oy), mx - ox);
+              const endA = Math.atan2(-(ry - oy), rx - ox);
+              ctx.strokeStyle = 'rgba(99, 102, 241, 0.55)';
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.arc(po.x, po.y, radius * viewScale, startA, endA, baseRad > 0);
+              ctx.stroke();
+              ctx.restore();
+            }
+
+            ctx.save();
+            ctx.globalAlpha = i === 1 ? 1 : 0.82;
+            drawMotifWithMatrix(ctx, motif, { a: s * ca, b: s * sa, c: -s * sa, d: s * ca, e: rx, f: ry }, true);
+            ctx.restore();
+          }
+
+          drawControlPoint(ox, oy, `O(${ox.toFixed(1)}; ${oy.toFixed(1)})`, '#6366F1');
+        } else if (state.activeTab === 'homothety') {
+          const ix = state.homothety.ix;
+          const iy = state.homothety.iy;
+          const kTarget = state.homothety.k;
+          const kCur = 1 + (kTarget - 1) * t;
+
+          const layers = state.homothety.cascade ? [kCur, kCur * 0.65, kCur * 0.35] : [kCur];
+          layers.forEach((kVal, idx) => {
+            const hx = ix + kVal * (mx - ix);
+            const hy = iy + kVal * (my - iy);
+            if (idx === 0) { imgX = hx; imgY = hy; }
+
+            if (state.showGuides && idx === 0) {
+              const pi = mathToScreen(ix, iy);
+              const pm = mathToScreen(mx, my);
+              const ph = mathToScreen(hx, hy);
+              ctx.save();
+              ctx.strokeStyle = '#0891B2';
+              ctx.lineWidth = 1.6;
+              ctx.setLineDash([6, 4]);
+              ctx.beginPath();
+              ctx.moveTo(pi.x, pi.y);
+              ctx.lineTo(pm.x, pm.y);
+              ctx.moveTo(pi.x, pi.y);
+              ctx.lineTo(ph.x, ph.y);
+              ctx.stroke();
+              ctx.restore();
+            }
+
+            ctx.save();
+            ctx.globalAlpha = idx === 0 ? 1 : 0.65;
+            drawMotifWithMatrix(ctx, motif, { a: s * kVal, b: 0, c: 0, d: s * kVal, e: hx, f: hy }, true);
+            ctx.restore();
+          });
+
+          drawControlPoint(ix, iy, `I(${ix.toFixed(1)}; ${iy.toFixed(1)})`, '#0891B2');
+        }
+
+        // Image point label M'
+        if (state.showGuides) {
+          const pImg = mathToScreen(imgX, imgY);
+          ctx.save();
+          ctx.fillStyle = '#D84B7A';
+          ctx.beginPath();
+          ctx.arc(pImg.x, pImg.y, 4.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.font = '700 12px Inter, sans-serif';
+          ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 4; ctx.strokeText("M'", pImg.x + 10, pImg.y - 10); ctx.fillText("M'", pImg.x + 10, pImg.y - 10);
+          ctx.restore();
+        }
+
+        elCoordReadout.textContent = `M(${mx.toFixed(1)}; ${my.toFixed(1)})  →  M'(${imgX.toFixed(1)}; ${imgY.toFixed(1)})`;
+      }
+
+      // =========================================================================
+      // 8. DIRECT CANVAS DRAG INTERACTION (MOUSE + TOUCH)
+      // =========================================================================
+      function getPointerPos(evt, targetCanvas) {
+        const rect = targetCanvas.getBoundingClientRect();
+        const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+        const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+
+      function onTransformPointerDown(evt) {
+        const p = getPointerPos(evt, canvas);
+        const mp = screenToMath(p.x, p.y);
+        const hitR = 22 / viewScale;
+
+        // Check specific control handles first
+        if (state.activeTab === 'translation') {
+          const tipX = -5.5 + state.translation.vx;
+          const tipY = -4.0 + state.translation.vy;
+          if (Math.hypot(mp.x - tipX, mp.y - tipY) < hitR) {
+            state.dragging = 'vecTip';
+            evt.preventDefault();
+            return;
+          }
+        } else if (state.activeTab === 'axial') {
+          const rad = (state.axial.angleDeg * Math.PI) / 180;
+          const ux = Math.cos(rad), uy = Math.sin(rad);
+          const nx = -uy, ny = ux;
+          const hx = state.axial.offset * nx + ux * 2.5;
+          const hy = state.axial.offset * ny + uy * 2.5;
+          if (Math.hypot(mp.x - hx, mp.y - hy) < hitR * 1.2) {
+            state.dragging = 'axisPoint';
+            evt.preventDefault();
+            return;
+          }
+        } else if (state.activeTab === 'central') {
+          if (Math.hypot(mp.x - state.central.ix, mp.y - state.central.iy) < hitR) {
+            state.dragging = 'center';
+            evt.preventDefault();
+            return;
+          }
+        } else if (state.activeTab === 'rotation') {
+          if (Math.hypot(mp.x - state.rotation.ox, mp.y - state.rotation.oy) < hitR) {
+            state.dragging = 'center';
+            evt.preventDefault();
+            return;
+          }
+        } else if (state.activeTab === 'homothety') {
+          if (Math.hypot(mp.x - state.homothety.ix, mp.y - state.homothety.iy) < hitR) {
+            state.dragging = 'center';
+            evt.preventDefault();
+            return;
+          }
+        }
+
+        // Check original figure H
+        if (Math.hypot(mp.x - state.figPos.x, mp.y - state.figPos.y) < 1.55 * state.figScale) {
+          state.dragging = 'figure';
+          state.dragOffset.x = mp.x - state.figPos.x;
+          state.dragOffset.y = mp.y - state.figPos.y;
+          evt.preventDefault();
+        }
+      }
+
+      function onTransformPointerMove(evt) {
+        if (!state.dragging) return;
+        evt.preventDefault();
+        const p = getPointerPos(evt, canvas);
+        const mp = screenToMath(p.x, p.y);
+        const snap = v => Math.round(v * 2) / 2;
+
+        if (state.dragging === 'figure') {
+          state.figPos.x = Math.max(-9, Math.min(9, snap(mp.x - state.dragOffset.x)));
+          state.figPos.y = Math.max(-6, Math.min(6, snap(mp.y - state.dragOffset.y)));
+        } else if (state.dragging === 'vecTip') {
+          state.translation.vx = Math.max(-8, Math.min(8, snap(mp.x - (-5.5))));
+          state.translation.vy = Math.max(-6, Math.min(6, snap(mp.y - (-4.0))));
+          const slVx = document.getElementById('sl-vx');
+          const slVy = document.getElementById('sl-vy');
+          if (slVx) { slVx.value = state.translation.vx; document.getElementById('val-vx').textContent = state.translation.vx.toFixed(1); }
+          if (slVy) { slVy.value = state.translation.vy; document.getElementById('val-vy').textContent = state.translation.vy.toFixed(1); }
+          updateFormulaOnly();
+        } else if (state.dragging === 'axisPoint') {
+          const deg = Math.round(((Math.atan2(mp.y, mp.x) * 180) / Math.PI + 360) % 180 / 5) * 5;
+          state.axial.angleDeg = deg;
+          const sl = document.getElementById('sl-ax-ang');
+          if (sl) { sl.value = deg; document.getElementById('val-ax-ang').textContent = deg + '°'; }
+          updateFormulaOnly();
+        } else if (state.dragging === 'center') {
+          const cx = Math.max(-5, Math.min(5, snap(mp.x)));
+          const cy = Math.max(-4, Math.min(4, snap(mp.y)));
+          if (state.activeTab === 'central') {
+            state.central.ix = cx; state.central.iy = cy;
+            const s1 = document.getElementById('sl-cix');
+            const s2 = document.getElementById('sl-ciy');
+            if (s1) { s1.value = cx; document.getElementById('val-cix').textContent = cx.toFixed(1); }
+            if (s2) { s2.value = cy; document.getElementById('val-ciy').textContent = cy.toFixed(1); }
+          } else if (state.activeTab === 'rotation') {
+            state.rotation.ox = cx; state.rotation.oy = cy;
+          } else if (state.activeTab === 'homothety') {
+            state.homothety.ix = cx; state.homothety.iy = cy;
+          }
+          updateFormulaOnly();
+        }
+        renderTransformStage();
+      }
+
+      function onTransformPointerUp() {
+        state.dragging = null;
+      }
+
+      canvas.addEventListener('mousedown', onTransformPointerDown);
+      window.addEventListener('mousemove', onTransformPointerMove);
+      window.addEventListener('mouseup', onTransformPointerUp);
+      canvas.addEventListener('touchstart', onTransformPointerDown, { passive: false });
+      window.addEventListener('touchmove', onTransformPointerMove, { passive: false });
+      window.addEventListener('touchend', onTransformPointerUp);
+
+      // =========================================================================
+      // 9. ANIMATION ENGINE
+      // =========================================================================
+      function startAnimation() {
+        if (state.animRaf) cancelAnimationFrame(state.animRaf);
+        state.animating = true;
+        state.animT = 0;
+        const startTime = performance.now();
+        const duration = 1400;
+
+        function tick(now) {
+          const elapsed = now - startTime;
+          const raw = Math.min(1, elapsed / duration);
+          // Smooth ease-in-out cubic
+          state.animT = raw < 0.5 ? 4 * raw * raw * raw : 1 - Math.pow(-2 * raw + 2, 3) / 2;
+          renderTransformStage();
+          if (raw < 1) {
+            state.animRaf = requestAnimationFrame(tick);
+          } else {
+            state.animating = false;
+            state.animT = 1;
+            state.animRaf = null;
+          }
+        }
+        state.animRaf = requestAnimationFrame(tick);
+      }
+
+      document.getElementById('btn-animate').addEventListener('click', startAnimation);
+      document.getElementById('btn-center-view').addEventListener('click', () => {
+        state.figPos = { x: -3.5, y: 1.5 };
+        renderTransformStage();
+      });
+      function setFigScale(val) {
+        state.figScale = Math.max(0.5, Math.min(2.5, Math.round(val * 10) / 10));
+        const sl = document.getElementById('sl-fig-scale');
+        const lbl = document.getElementById('val-fig-scale');
+        if (sl) sl.value = state.figScale;
+        if (lbl) lbl.textContent = Math.round(state.figScale * 100) + '%';
+        renderTransformStage();
+      }
+      document.getElementById('sl-fig-scale').addEventListener('input', e => setFigScale(parseFloat(e.target.value)));
+      document.getElementById('btn-scale-down').addEventListener('click', () => setFigScale(state.figScale - 0.2));
+      document.getElementById('btn-scale-up').addEventListener('click', () => setFigScale(state.figScale + 0.2));
+
+      document.getElementById('btn-reset-transform').addEventListener('click', () => {
+        state.figPos = { x: -3.5, y: 1.5 };
+        setFigScale(1.0);
+        state.translation = { vx: 6.5, vy: -2.0, repeat: 1 };
+        state.axial = { angleDeg: 90, offset: 0 };
+        state.central = { ix: 0.5, iy: 0.0 };
+        state.rotation = { ox: 0.0, oy: 0.0, angleDeg: 90, rosetteCount: 1 };
+        state.homothety = { ix: -1.5, iy: -1.0, k: 1.8, cascade: false };
+        state.animT = 1;
+        renderControlPanel();
+        renderTransformStage();
+        showToast('Đã đặt lại thông số mặc định');
+      });
+
+      document.getElementById('toggle-grid').addEventListener('change', e => {
+        state.showGrid = e.target.checked;
+        renderTransformStage();
+      });
+      document.getElementById('toggle-guides').addEventListener('change', e => {
+        state.showGuides = e.target.checked;
+        renderTransformStage();
+      });
+
+      // =========================================================================
+      // 10. TESSELLATION STUDIO (TAB 6 — TRANH ĐAN KHÍT)
+      // Mathematical guarantee of 100% gap-free interlocking polygons!
+      // =========================================================================
+      function buildEdgePoints(p0, p1, nodes, flipPerp = false, reverse = false) {
+        // Returns array of points from p0 to p1 (excluding p0, including p1)
+        const dx = p1.x - p0.x;
+        const dy = p1.y - p0.y;
+        // Normal rotated -90 deg (outward/upward for left-to-right)
+        const nx = dy;
+        const ny = -dx;
+        const sign = flipPerp ? -1 : 1;
+
+        const pts = [];
+        const list = reverse ? [...nodes].reverse() : nodes;
+        list.forEach(n => {
+          const t = reverse ? 1 - n.t : n.t;
+          const d = n.d * sign;
+          pts.push({
+            x: p0.x + dx * t + nx * d,
+            y: p0.y + dy * t + ny * d
+          });
+        });
+        pts.push({ x: p1.x, y: p1.y });
+        return pts;
+      }
+
+      function supportsRect(mode) {
+        return mode === 'translation' || mode === 'glide' || mode === 'axial_mirror' || mode === 'central180';
+      }
+
+      function getBaseAspect(mode) {
+        if (supportsRect(mode) && state.tess.baseShape === 'rect') {
+          return { w: 1.5, h: 1.0 };
+        }
+        return { w: 1.0, h: 1.0 };
+      }
+
+      // Generate closed polygon points for 1 fundamental tile in unit coordinates
+      function getUnitTilePolygon(mode) {
+        const { edgeA, edgeB, edgeC } = state.tess;
+        const asp = getBaseAspect(mode);
+        const W = asp.w, H = asp.h;
+
+        if (mode === 'translation') {
+          const TL = { x: 0, y: 0 }, TR = { x: W, y: 0 }, BR = { x: W, y: H }, BL = { x: 0, y: H };
+          const top = buildEdgePoints(TL, TR, edgeA, false, false);
+          const right = buildEdgePoints(TR, BR, edgeB, false, false);
+          const bottom = buildEdgePoints(BR, BL, edgeA, true, true);
+          const left = buildEdgePoints(BL, TL, edgeB, true, true);
+          return [TL, ...top, ...right, ...bottom, ...left];
+        }
+
+        if (mode === 'rotation90') {
+          // A = TL(0,0): Left (Đỏ) rotated +90° around A -> Top (Xanh ngọc)
+          // B = BR(1,1): Bottom (Cam) rotated -90° around B -> Right (Tím)
+          const TL = { x: 0, y: 0 }, TR = { x: 1, y: 0 }, BR = { x: 1, y: 1 }, BL = { x: 0, y: 1 };
+          const top = buildEdgePoints(TL, TR, edgeA, true, false);
+          const right = buildEdgePoints(TR, BR, edgeB, true, true);
+          const bottom = buildEdgePoints(BR, BL, edgeB, false, false);
+          const left = buildEdgePoints(BL, TL, edgeA, false, true);
+          return [TL, ...top, ...right, ...bottom, ...left];
+        }
+
+        if (mode === 'glide') {
+          const TL = { x: 0, y: 0 }, TR = { x: W, y: 0 }, BR = { x: W, y: H }, BL = { x: 0, y: H };
+          const top = buildEdgePoints(TL, TR, edgeA, false, false);
+          const right = buildEdgePoints(TR, BR, edgeB, false, false);
+          const bottom = buildEdgePoints(BR, BL, edgeA, true, false);
+          const left = buildEdgePoints(BL, TL, edgeB, true, true);
+          return [TL, ...top, ...right, ...bottom, ...left];
+        }
+
+        if (mode === 'axial_mirror') {
+          // 2-axis reflection (pgg):
+          // Top (TL->TR): edgeA; Bottom (BR->BL): horizontally mirrored Top (reverse=false, flipPerp=true)
+          // Right (TR->BR): edgeB; Left (BL->TL): vertically mirrored Right (reverse=false, flipPerp=true)
+          const TL = { x: 0, y: 0 }, TR = { x: W, y: 0 }, BR = { x: W, y: H }, BL = { x: 0, y: H };
+          const top = buildEdgePoints(TL, TR, edgeA, false, false);
+          const right = buildEdgePoints(TR, BR, edgeB, false, false);
+          const bottom = buildEdgePoints(BR, BL, edgeA, true, false);
+          const left = buildEdgePoints(BL, TL, edgeB, true, false);
+          return [TL, ...top, ...right, ...bottom, ...left];
+        }
+
+        if (mode === 'central180') {
+          // Central symmetry around edge midpoints I1, I2, I3, I4 (p2):
+          // Each edge's 2nd half is the 180° point-reflection of its 1st half around its midpoint!
+          const TL = { x: 0, y: 0 }, TR = { x: W, y: 0 }, BR = { x: W, y: H }, BL = { x: 0, y: H };
+          const Mtop = { x: W / 2, y: 0 }, Mright = { x: W, y: H / 2 }, Mbot = { x: W / 2, y: H }, Mleft = { x: 0, y: H / 2 };
+          const top1 = buildEdgePoints(TL, Mtop, edgeA, false, false);
+          const top2 = buildEdgePoints(Mtop, TR, edgeA, true, true);
+          const right1 = buildEdgePoints(TR, Mright, edgeB, false, false);
+          const right2 = buildEdgePoints(Mright, BR, edgeB, true, true);
+          const bot1 = buildEdgePoints(BR, Mbot, edgeA, true, false);
+          const bot2 = buildEdgePoints(Mbot, BL, edgeA, false, true);
+          const left1 = buildEdgePoints(BL, Mleft, edgeB, true, false);
+          const left2 = buildEdgePoints(Mleft, TL, edgeB, false, true);
+          return [TL, ...top1, ...top2, ...right1, ...right2, ...bot1, ...bot2, ...left1, ...left2];
+        }
+
+        // mode === 'hex120'
+        // Regular hexagon with radius 1 centered at (0,0), vertices V0..V5
+        // Edges 0 (V0->V1), 2 (V2->V3), 4 (V4->V5) are sculpted by edgeA, edgeB, edgeC
+        // Edge 1 (V1->V2) is Edge 0 rotated 120° around V1 -> reverse=true, flipPerp=true!
+        // Edge 3 (V3->V4) is Edge 2 rotated 120° around V3 -> reverse=true, flipPerp=true!
+        // Edge 5 (V5->V0) is Edge 4 rotated 120° around V5 -> reverse=true, flipPerp=true!
+        const V = [];
+        for (let i = 0; i < 6; i++) {
+          const a = (i * Math.PI) / 3;
+          V.push({ x: Math.cos(a), y: Math.sin(a) });
+        }
+        const e0 = buildEdgePoints(V[0], V[1], edgeA, false, false);
+        const e1 = buildEdgePoints(V[1], V[2], edgeA, true, true);
+        const e2 = buildEdgePoints(V[2], V[3], edgeB, false, false);
+        const e3 = buildEdgePoints(V[3], V[4], edgeB, true, true);
+        const e4 = buildEdgePoints(V[4], V[5], edgeC, false, false);
+        const e5 = buildEdgePoints(V[5], V[0], edgeC, true, true);
+        return [V[0], ...e0, ...e1, ...e2, ...e3, ...e4, ...e5];
+      }
+
+      function traceSmoothPolygon(targetCtx, pts) {
+        if (!pts.length) return;
+        targetCtx.beginPath();
+        targetCtx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) {
+          targetCtx.lineTo(pts[i].x, pts[i].y);
+        }
+        targetCtx.closePath();
+      }
+
+      function drawTileInnerStamp(targetCtx, cx, cy, scale, strokeColor) {
+        const stamp = state.tess.stamp;
+        if (stamp === 'none') return;
+        targetCtx.save();
+        targetCtx.translate(cx, cy);
+        targetCtx.scale(scale, scale);
+        targetCtx.strokeStyle = strokeColor;
+        targetCtx.fillStyle = strokeColor;
+        targetCtx.globalAlpha = 0.28;
+
+        if (stamp === 'flower') {
+          for (let i = 0; i < 5; i++) {
+            targetCtx.rotate((Math.PI * 2) / 5);
+            targetCtx.beginPath();
+            targetCtx.ellipse(0, -0.14, 0.06, 0.11, 0, 0, Math.PI * 2);
+            targetCtx.fill();
+          }
+          targetCtx.globalAlpha = 0.55;
+          targetCtx.beginPath();
+          targetCtx.arc(0, 0, 0.055, 0, Math.PI * 2);
+          targetCtx.fill();
+        } else if (stamp === 'eye') {
+          targetCtx.globalAlpha = 0.65;
+          targetCtx.beginPath();
+          targetCtx.arc(0.14, -0.08, 0.065, 0, Math.PI * 2);
+          targetCtx.fill();
+          targetCtx.fillStyle = '#FFFFFF';
+          targetCtx.beginPath();
+          targetCtx.arc(0.16, -0.1, 0.025, 0, Math.PI * 2);
+          targetCtx.fill();
+        } else if (stamp === 'veins') {
+          targetCtx.lineWidth = 0.03;
+          targetCtx.beginPath();
+          targetCtx.moveTo(-0.24, 0.2);
+          targetCtx.quadraticCurveTo(0, 0, 0.24, -0.2);
+          targetCtx.moveTo(0, 0);
+          targetCtx.lineTo(0.14, 0.12);
+          targetCtx.moveTo(-0.08, 0.08);
+          targetCtx.lineTo(-0.18, -0.06);
+          targetCtx.stroke();
+        }
+        targetCtx.restore();
+      }
+
+      const tileZoomCanvas = document.getElementById('tile-zoom-canvas');
+      const tileZoomCtx = tileZoomCanvas.getContext('2d');
+      let activeEditorCanvas = tileCanvas;
+
+      function renderTileEditor() {
+        renderTileEditorOn(tileCanvas, tileCtx, false);
+        const zoomModal = document.getElementById('modal-tile-zoom');
+        if (zoomModal && !zoomModal.classList.contains('hidden')) {
+          renderTileEditorOn(tileZoomCanvas, tileZoomCtx, true);
+        }
+      }
+
+      // Render Base Tile Editor on any target canvas (sidebar or zoomed modal)
+      function renderTileEditorOn(targetCanvas, c2d, isZoomed) {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rect = targetCanvas.parentElement.getBoundingClientRect();
+        if (rect.width < 10) return;
+        targetCanvas.width = Math.round(rect.width * dpr);
+        targetCanvas.height = Math.round(rect.height * dpr);
+        c2d.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const w = rect.width;
+        const h = rect.height;
+        c2d.clearRect(0, 0, w, h);
+        const tileCtx = c2d;
+        const dotR = isZoomed ? 9 : 6.5;
+
+        const mode = state.tess.mode;
+        const pal = PALETTES[state.tess.paletteIdx];
+        const poly = getUnitTilePolygon(mode);
+
+        tileCtx.save();
+        if (mode === 'hex120') {
+          const R = Math.min(w, h) * 0.34;
+          tileCtx.translate(w / 2, h / 2);
+          const scaled = poly.map(p => ({ x: p.x * R, y: p.y * R }));
+          traceSmoothPolygon(tileCtx, scaled);
+          tileCtx.fillStyle = pal.colors[0];
+          tileCtx.fill();
+          tileCtx.strokeStyle = pal.stroke;
+          tileCtx.lineWidth = 2;
+          tileCtx.stroke();
+
+          // Draw draggable handles on edges 0, 2, 4
+          const V = [];
+          for (let i = 0; i < 6; i++) {
+            const a = (i * Math.PI) / 3;
+            V.push({ x: Math.cos(a) * R, y: Math.sin(a) * R });
+          }
+          drawEditorEdgeNodes(V[0], V[1], state.tess.edgeA, '#059669', false, tileCtx, dotR);
+          drawEditorEdgeNodes(V[2], V[3], state.tess.edgeB, '#D84B7A', false, tileCtx, dotR);
+          drawEditorEdgeNodes(V[4], V[5], state.tess.edgeC, '#6366F1', false, tileCtx, dotR);
+        } else {
+          const asp = getBaseAspect(mode);
+          const S = Math.min((w * 0.64) / asp.w, (h * 0.56) / asp.h);
+          const tileW = S * asp.w;
+          const tileH = S * asp.h;
+          const ox = (w - tileW) / 2;
+          const oy = (h - tileH) / 2;
+          const scaled = poly.map(p => ({ x: ox + p.x * S, y: oy + p.y * S }));
+
+          // Faint base square/rect reference
+          tileCtx.strokeStyle = '#CBD5E1';
+          tileCtx.setLineDash([4, 4]);
+          tileCtx.strokeRect(ox, oy, tileW, tileH);
+          tileCtx.setLineDash([]);
+
+          traceSmoothPolygon(tileCtx, scaled);
+          tileCtx.fillStyle = pal.colors[0];
+          tileCtx.fill();
+          tileCtx.strokeStyle = pal.stroke;
+          tileCtx.lineWidth = 2;
+          tileCtx.stroke();
+
+          // Draw draggable handles
+          const TL = { x: ox, y: oy };
+          const TR = { x: ox + tileW, y: oy };
+          const BR = { x: ox + tileW, y: oy + tileH };
+          const BL = { x: ox, y: oy + tileH };
+
+          if (mode === 'rotation90') {
+            // Highlight the 4 color-coded edges matching A (Red->Teal) and B (Orange->Purple)
+            const drawSeg = (p0, pts, col) => {
+              tileCtx.save();
+              tileCtx.strokeStyle = col;
+              tileCtx.lineWidth = 3;
+              tileCtx.beginPath();
+              tileCtx.moveTo(p0.x, p0.y);
+              pts.forEach(pt => tileCtx.lineTo(pt.x, pt.y));
+              tileCtx.stroke();
+              tileCtx.restore();
+            };
+            drawSeg(BL, buildEdgePoints(BL, TL, state.tess.edgeA, false, true), '#EF4444');
+            drawSeg(TL, buildEdgePoints(TL, TR, state.tess.edgeA, true, false), '#0D9488');
+            drawSeg(BR, buildEdgePoints(BR, BL, state.tess.edgeB, false, false), '#F97316');
+            drawSeg(TR, buildEdgePoints(TR, BR, state.tess.edgeB, true, true), '#9333EA');
+
+            // Corner labels A (TL) and B (BR)
+            tileCtx.save();
+            tileCtx.fillStyle = '#111827';
+            tileCtx.font = '800 12px Inter, sans-serif';
+            tileCtx.fillText('A', TL.x - 14, TL.y - 6);
+            tileCtx.fillText('B', BR.x + 8, BR.y + 13);
+            tileCtx.restore();
+
+            // 4 Red dots on Left (TL->BL) and 4 Orange dots on Bottom (BR->BL)
+            drawEditorEdgeNodes(TL, BL, state.tess.edgeA, '#EF4444', true, tileCtx, dotR);
+            drawEditorEdgeNodes(BR, BL, state.tess.edgeB, '#F97316', false, tileCtx, dotR);
+          } else if (mode === 'central180') {
+            const Mtop = { x: ox + tileW / 2, y: oy };
+            const Mright = { x: ox + tileW, y: oy + tileH / 2 };
+            // Midpoint center markers I1, I2
+            tileCtx.save();
+            tileCtx.fillStyle = '#F59E0B';
+            tileCtx.strokeStyle = '#FFFFFF';
+            tileCtx.lineWidth = 2;
+            [Mtop, Mright].forEach((m, idx) => {
+              tileCtx.beginPath(); tileCtx.arc(m.x, m.y, 5.5, 0, Math.PI * 2); tileCtx.fill(); tileCtx.stroke();
+              tileCtx.fillStyle = '#92400E';
+              tileCtx.font = '800 11px Inter, sans-serif';
+              tileCtx.fillText(idx === 0 ? 'I₁' : 'I₂', m.x + 7, m.y - 6);
+              tileCtx.fillStyle = '#F59E0B';
+            });
+            tileCtx.restore();
+            drawEditorEdgeNodes(TL, Mtop, state.tess.edgeA, '#059669', false, tileCtx, dotR);
+            drawEditorEdgeNodes(TR, Mright, state.tess.edgeB, '#D84B7A', false, tileCtx, dotR);
+          } else {
+            drawEditorEdgeNodes(TL, TR, state.tess.edgeA, '#059669', false, tileCtx, dotR);
+            drawEditorEdgeNodes(TR, BR, state.tess.edgeB, '#D84B7A', false, tileCtx, dotR);
+          }
+        }
+        tileCtx.restore();
+      }
+
+      function drawEditorEdgeNodes(p0, p1, nodes, color, flipPerp = false, c2d = tileCtx, r = 6.5) {
+        const dx = p1.x - p0.x;
+        const dy = p1.y - p0.y;
+        const sign = flipPerp ? -1 : 1;
+        const nx = dy * sign;
+        const ny = -dx * sign;
+        nodes.forEach(n => {
+          const x = p0.x + dx * n.t + nx * n.d;
+          const y = p0.y + dy * n.t + ny * n.d;
+          c2d.fillStyle = color;
+          c2d.strokeStyle = '#FFFFFF';
+          c2d.lineWidth = 2.2;
+          c2d.beginPath();
+          c2d.arc(x, y, r, 0, Math.PI * 2);
+          c2d.fill();
+          c2d.stroke();
+        });
+      }
+
+      function drawTessArrow(c2d, x1, y1, x2, y2, color, label) {
+        const dx = x2 - x1, dy = y2 - y1;
+        const ang = Math.atan2(dy, dx);
+        c2d.save();
+        c2d.strokeStyle = color;
+        c2d.fillStyle = color;
+        c2d.lineWidth = 2.4;
+        c2d.setLineDash([6, 4]);
+        c2d.beginPath();
+        c2d.moveTo(x1, y1);
+        c2d.lineTo(x2, y2);
+        c2d.stroke();
+        c2d.setLineDash([]);
+        const head = 9;
+        c2d.beginPath();
+        c2d.moveTo(x2, y2);
+        c2d.lineTo(x2 - head * Math.cos(ang - 0.4), y2 - head * Math.sin(ang - 0.4));
+        c2d.lineTo(x2 - head * Math.cos(ang + 0.4), y2 - head * Math.sin(ang + 0.4));
+        c2d.closePath();
+        c2d.fill();
+        if (label) {
+          const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+          c2d.font = '700 12px Inter, sans-serif';
+          c2d.strokeStyle = '#FFFFFF';
+          c2d.lineWidth = 4;
+          c2d.strokeText(label, mx + 6, my - 6);
+          c2d.fillText(label, mx + 6, my - 6);
+        }
+        c2d.restore();
+      }
+
+      // Render the Tessellation Art Canvas progressively across 3 pedagogical steps
+      function renderTessellation() {
+        if (state.activeTab !== 'tessellation') return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rect = tessWrap.getBoundingClientRect();
+        if (rect.width < 10) return;
+        tessCanvas.width = Math.round(rect.width * dpr);
+        tessCanvas.height = Math.round(rect.height * dpr);
+        tessCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const w = rect.width;
+        const h = rect.height;
+        tessCtx.fillStyle = '#FAF7F2';
+        tessCtx.fillRect(0, 0, w, h);
+
+        const mode = state.tess.mode;
+        const pal = PALETTES[state.tess.paletteIdx];
+        const poly = getUnitTilePolygon(mode);
+        const N = state.tess.density;
+        const step = state.tess.step;
+        const animT = state.tess.stepAnimT;
+        const asp = getBaseAspect(mode);
+
+        // Subtle studio grid in Step 1 & Step 2
+        if (step < 3) {
+          tessCtx.strokeStyle = '#EFECE4';
+          tessCtx.lineWidth = 1;
+          tessCtx.beginPath();
+          for (let gx = 0; gx < w; gx += 32) { tessCtx.moveTo(gx, 0); tessCtx.lineTo(gx, h); }
+          for (let gy = 0; gy < h; gy += 32) { tessCtx.moveTo(0, gy); tessCtx.lineTo(w, gy); }
+          tessCtx.stroke();
+        }
+
+        // ==================== STEP 1: SINGLE FUNDAMENTAL TILE ====================
+        if (step === 1) {
+          if (mode === 'hex120') {
+            const R = Math.min(w, h) * 0.28;
+            tessCtx.save();
+            tessCtx.translate(w / 2, h / 2);
+            // Reference regular hexagon
+            tessCtx.strokeStyle = '#CBD5E1';
+            tessCtx.lineWidth = 1.6;
+            tessCtx.setLineDash([6, 5]);
+            tessCtx.beginPath();
+            for (let i = 0; i < 6; i++) {
+              const a = (i * Math.PI) / 3;
+              const px = Math.cos(a) * R, py = Math.sin(a) * R;
+              if (i === 0) tessCtx.moveTo(px, py); else tessCtx.lineTo(px, py);
+            }
+            tessCtx.closePath();
+            tessCtx.stroke();
+            tessCtx.setLineDash([]);
+
+            const pts = poly.map(p => ({ x: p.x * R, y: p.y * R }));
+            traceSmoothPolygon(tessCtx, pts);
+            tessCtx.fillStyle = pal.colors[0];
+            tessCtx.fill();
+            tessCtx.strokeStyle = pal.stroke;
+            tessCtx.lineWidth = 2.4;
+            tessCtx.stroke();
+            drawTileInnerStamp(tessCtx, 0, 0, R * 1.15, pal.stroke);
+            tessCtx.restore();
+          } else {
+            const S = Math.min((w * 0.48) / asp.w, (h * 0.48) / asp.h);
+            const tileW = S * asp.w;
+            const tileH = S * asp.h;
+            const ox = (w - tileW) / 2;
+            const oy = (h - tileH) / 2;
+
+            // Reference base square or rectangle
+            tessCtx.save();
+            tessCtx.strokeStyle = '#94A3B8';
+            tessCtx.lineWidth = 1.6;
+            tessCtx.setLineDash([6, 5]);
+            tessCtx.strokeRect(ox, oy, tileW, tileH);
+            tessCtx.setLineDash([]);
+
+            tessCtx.translate(ox, oy);
+            const pts = poly.map(p => ({ x: p.x * S, y: p.y * S }));
+            traceSmoothPolygon(tessCtx, pts);
+            tessCtx.fillStyle = pal.colors[0];
+            tessCtx.fill();
+            tessCtx.strokeStyle = pal.stroke;
+            tessCtx.lineWidth = 2.4;
+            tessCtx.stroke();
+            drawTileInnerStamp(tessCtx, tileW * 0.5, tileH * 0.5, S, pal.stroke);
+            tessCtx.restore();
+
+            // Pedagogical transformation arrows on Step 1
+            if (mode === 'translation') {
+              drawTessArrow(tessCtx, ox + tileW * 0.5, oy - 16, ox + tileW * 0.5, oy + tileH + 16, '#059669', 'Tịnh tiến xuống');
+              drawTessArrow(tessCtx, ox + tileW + 16, oy + tileH * 0.5, ox - 16, oy + tileH * 0.5, '#D84B7A', 'Tịnh tiến trái');
+            } else if (mode === 'rotation90') {
+              // Color-coded edges + Corner A & B labels matching the classroom diagram
+              const TL = { x: ox, y: oy }, TR = { x: ox + tileW, y: oy }, BR = { x: ox + tileW, y: oy + tileH }, BL = { x: ox, y: oy + tileH };
+              const drawMainEdge = (p0, pts, col) => {
+                tessCtx.save();
+                tessCtx.strokeStyle = col;
+                tessCtx.lineWidth = 4;
+                tessCtx.beginPath();
+                tessCtx.moveTo(p0.x, p0.y);
+                pts.forEach(pt => tessCtx.lineTo(pt.x, pt.y));
+                tessCtx.stroke();
+                tessCtx.restore();
+              };
+              drawMainEdge(BL, buildEdgePoints(BL, TL, state.tess.edgeA, false, true), '#EF4444');
+              drawMainEdge(TL, buildEdgePoints(TL, TR, state.tess.edgeA, true, false), '#0D9488');
+              drawMainEdge(BR, buildEdgePoints(BR, BL, state.tess.edgeB, false, false), '#F97316');
+              drawMainEdge(TR, buildEdgePoints(TR, BR, state.tess.edgeB, true, true), '#9333EA');
+
+              // Corner markers A & B
+              tessCtx.save();
+              tessCtx.fillStyle = '#111827';
+              tessCtx.strokeStyle = '#FFFFFF';
+              tessCtx.lineWidth = 3;
+              tessCtx.beginPath(); tessCtx.arc(TL.x, TL.y, 6, 0, Math.PI * 2); tessCtx.fill(); tessCtx.stroke();
+              tessCtx.beginPath(); tessCtx.arc(BR.x, BR.y, 6, 0, Math.PI * 2); tessCtx.fill(); tessCtx.stroke();
+              tessCtx.font = '800 15px Inter, sans-serif';
+              tessCtx.strokeText('A', TL.x - 20, TL.y - 10); tessCtx.fillText('A', TL.x - 20, TL.y - 10);
+              tessCtx.strokeText('B', BR.x + 12, BR.y + 18); tessCtx.fillText('B', BR.x + 12, BR.y + 18);
+              tessCtx.restore();
+
+              drawTessArrow(tessCtx, ox - 28, oy + tileH * 0.45, ox + tileW * 0.45, oy - 22, '#0D9488', 'Quay tâm A, +90° (Đỏ → Xanh)');
+              drawTessArrow(tessCtx, ox + tileW * 0.55, oy + tileH + 26, ox + tileW + 26, oy + tileH * 0.55, '#9333EA', 'Quay tâm B, -90° (Cam → Tím)');
+            } else if (mode === 'glide') {
+              drawTessArrow(tessCtx, ox + tileW * 0.5, oy - 16, ox + tileW * 0.5, oy + tileH + 16, '#D84B7A', 'Đối xứng trượt');
+            } else if (mode === 'axial_mirror') {
+              // Draw vertical and horizontal symmetry axes
+              tessCtx.save();
+              tessCtx.strokeStyle = '#D84B7A';
+              tessCtx.lineWidth = 2;
+              tessCtx.setLineDash([7, 5]);
+              tessCtx.beginPath();
+              tessCtx.moveTo(ox + tileW / 2, oy - 36);
+              tessCtx.lineTo(ox + tileW / 2, oy + tileH + 36);
+              tessCtx.moveTo(ox - 36, oy + tileH / 2);
+              tessCtx.lineTo(ox + tileW + 36, oy + tileH / 2);
+              tessCtx.stroke();
+              tessCtx.setLineDash([]);
+              tessCtx.restore();
+              drawTessArrow(tessCtx, ox + tileW * 0.5, oy - 16, ox + tileW * 0.5, oy + tileH + 16, '#059669', 'Đối xứng trục dọc');
+              drawTessArrow(tessCtx, ox + tileW + 16, oy + tileH * 0.5, ox - 16, oy + tileH * 0.5, '#D84B7A', 'Đối xứng trục ngang');
+            } else if (mode === 'central180') {
+              const ptsI = [
+                { x: ox + tileW / 2, y: oy, lbl: 'I₁ (180°)' },
+                { x: ox + tileW, y: oy + tileH / 2, lbl: 'I₂ (180°)' },
+                { x: ox + tileW / 2, y: oy + tileH, lbl: 'I₃' },
+                { x: ox, y: oy + tileH / 2, lbl: 'I₄' }
+              ];
+              tessCtx.save();
+              ptsI.forEach(p => {
+                tessCtx.fillStyle = '#F59E0B';
+                tessCtx.strokeStyle = '#FFFFFF';
+                tessCtx.lineWidth = 3;
+                tessCtx.beginPath(); tessCtx.arc(p.x, p.y, 6.5, 0, Math.PI * 2); tessCtx.fill(); tessCtx.stroke();
+                tessCtx.font = '800 13px Inter, sans-serif';
+                tessCtx.fillStyle = '#92400E';
+                tessCtx.strokeText(p.lbl, p.x + 10, p.y - 8);
+                tessCtx.fillText(p.lbl, p.x + 10, p.y - 8);
+              });
+              tessCtx.restore();
+              drawTessArrow(tessCtx, ox + tileW * 0.25, oy - 18, ox + tileW * 0.75, oy - 18, '#059669', 'Đ_I₁ (Quay 180°)');
+              drawTessArrow(tessCtx, ox + tileW + 20, oy + tileH * 0.25, ox + tileW + 20, oy + tileH * 0.75, '#D84B7A', 'Đ_I₂ (Quay 180°)');
+            }
+          }
+
+          // Bottom guidance pill
+          tessCtx.save();
+          tessCtx.fillStyle = 'rgba(27, 67, 50, 0.9)';
+          const msg = 'Bước 1: Kéo các nút ở bảng bên trái để tạo mảnh ghép cơ sở, rồi bấm "Bước tiếp theo →"';
+          tessCtx.font = '600 12px Inter, sans-serif';
+          const tw = tessCtx.measureText(msg).width + 28;
+          tessCtx.beginPath();
+          tessCtx.roundRect((w - tw) / 2, h - 42, tw, 30, 15);
+          tessCtx.fill();
+          tessCtx.fillStyle = '#FFFFFF';
+          tessCtx.fillText(msg, (w - tw) / 2 + 14, h - 23);
+          tessCtx.restore();
+          return;
+        }
+
+        // ==================== STEP 2: FIRST INTERLOCKING STRIP / CLUSTER ====================
+        if (step === 2) {
+          if (mode === 'hex120') {
+            const R = Math.min(w, h) * 0.14;
+            const dx = 1.5 * R;
+            const dy = Math.sqrt(3) * R;
+            const cx0 = w / 2, cy0 = h / 2;
+            const cluster = [
+              { x: 0, y: 0, c: 0 },
+              { x: 0, y: -dy, c: 1 },
+              { x: dx, y: -dy / 2, c: 2 },
+              { x: dx, y: dy / 2, c: 1 },
+              { x: 0, y: dy, c: 2 },
+              { x: -dx, y: dy / 2, c: 1 },
+              { x: -dx, y: -dy / 2, c: 2 }
+            ];
+            cluster.forEach((item, idx) => {
+              const pT = idx === 0 ? 1 : animT;
+              tessCtx.save();
+              tessCtx.globalAlpha = idx === 0 ? 1 : pT;
+              tessCtx.translate(cx0 + item.x * pT, cy0 + item.y * pT);
+              const pts = poly.map(p => ({ x: p.x * R, y: p.y * R }));
+              traceSmoothPolygon(tessCtx, pts);
+              tessCtx.fillStyle = pal.colors[item.c % pal.colors.length];
+              tessCtx.fill();
+              tessCtx.strokeStyle = idx === 0 ? '#E11D48' : pal.stroke;
+              tessCtx.lineWidth = idx === 0 ? 3 : 1.5;
+              tessCtx.stroke();
+              drawTileInnerStamp(tessCtx, 0, 0, R * 1.15, pal.stroke);
+              tessCtx.restore();
+            });
+          } else if (mode === 'rotation90') {
+            // 2x2 pinwheel cluster rotating 0°, 90°, 180°, 270° around center!
+            const S = Math.min(w, h) * 0.27;
+            const ox = w / 2 - S;
+            const oy = h / 2 - S;
+            const quads = [
+              { c: 0, r: 0, rot: 0, col: 0 },
+              { c: 1, r: 0, rot: Math.PI / 2, col: 1 },
+              { c: 1, r: 1, rot: Math.PI, col: 2 },
+              { c: 0, r: 1, rot: -Math.PI / 2, col: 3 }
+            ];
+            quads.forEach((q, idx) => {
+              const pT = idx === 0 ? 1 : animT;
+              tessCtx.save();
+              tessCtx.globalAlpha = idx === 0 ? 1 : pT;
+              tessCtx.translate(ox + (q.c + 0.5) * S, oy + (q.r + 0.5) * S);
+              tessCtx.rotate(q.rot * pT);
+              tessCtx.translate(-0.5 * S, -0.5 * S);
+              const pts = poly.map(p => ({ x: p.x * S, y: p.y * S }));
+              traceSmoothPolygon(tessCtx, pts);
+              tessCtx.fillStyle = pal.colors[q.col % pal.colors.length];
+              tessCtx.fill();
+              tessCtx.strokeStyle = idx === 0 ? '#E11D48' : pal.stroke;
+              tessCtx.lineWidth = idx === 0 ? 3 : 1.5;
+              tessCtx.stroke();
+              drawTileInnerStamp(tessCtx, S * 0.5, S * 0.5, S, pal.stroke);
+              tessCtx.restore();
+            });
+            drawTessArrow(tessCtx, w / 2 - S * 0.35, h / 2 - S * 0.35, w / 2 + S * 0.35, h / 2 - S * 0.35, '#6366F1', 'Cụm quay 90°');
+          } else {
+            // Translation or Glide: show a 2-row x 3-col interlocking sample strip centered!
+            const S = Math.min((w * 0.24) / asp.w, (h * 0.28) / asp.h);
+            const tileW = S * asp.w;
+            const tileH = S * asp.h;
+            const cols = 3, rows = 2;
+            const startX = (w - cols * tileW) / 2;
+            const startY = (h - rows * tileH) / 2;
+
+            for (let r = 0; r < rows; r++) {
+              for (let c = 0; c < cols; c++) {
+                const isFirst = (r === 0 && c === 0);
+                const pT = isFirst ? 1 : animT;
+                const tx = startX + c * tileW * pT;
+                const ty = startY + r * tileH * pT;
+                tessCtx.save();
+                tessCtx.globalAlpha = isFirst ? 1 : pT;
+                if (mode === 'glide' && r % 2 !== 0) {
+                  tessCtx.translate(tx + tileW, ty);
+                  tessCtx.scale(-1, 1);
+                } else if (mode === 'axial_mirror') {
+                  const flipX = (r % 2 !== 0) ? -1 : 1;
+                  const flipY = (c % 2 !== 0) ? -1 : 1;
+                  tessCtx.translate(tx + (flipX < 0 ? tileW : 0), ty + (flipY < 0 ? tileH : 0));
+                  tessCtx.scale(flipX, flipY);
+                } else if (mode === 'central180' && (c + r) % 2 !== 0) {
+                  tessCtx.translate(tx + tileW * 0.5, ty + tileH * 0.5);
+                  tessCtx.rotate(Math.PI * pT);
+                  tessCtx.translate(-tileW * 0.5, -tileH * 0.5);
+                } else {
+                  tessCtx.translate(tx, ty);
+                }
+                const pts = poly.map(p => ({ x: p.x * S, y: p.y * S }));
+                traceSmoothPolygon(tessCtx, pts);
+                const colorIdx = mode === 'translation' ? (c % 2) + (r % 2) * 2 : (c + r) % 2;
+                tessCtx.fillStyle = pal.colors[colorIdx % pal.colors.length];
+                tessCtx.fill();
+                tessCtx.strokeStyle = isFirst ? '#E11D48' : pal.stroke;
+                tessCtx.lineWidth = isFirst ? 3 : 1.5;
+                tessCtx.stroke();
+                drawTileInnerStamp(tessCtx, tileW * 0.5, tileH * 0.5, S, pal.stroke);
+                tessCtx.restore();
+              }
+            }
+            const lblH = mode === 'axial_mirror' ? 'Đối xứng trục ngang' : (mode === 'central180' ? 'Đối xứng tâm I₂ (180°)' : 'Tịnh tiến ngang');
+            const lblV = mode === 'glide' ? 'Trượt & lật' : (mode === 'axial_mirror' ? 'Đối xứng trục dọc' : (mode === 'central180' ? 'Đối xứng tâm I₃ (180°)' : 'Tịnh tiến dọc'));
+            drawTessArrow(tessCtx, startX + tileW * 0.5, startY + tileH * 0.5, startX + tileW * 1.5, startY + tileH * 0.5, '#059669', lblH);
+            drawTessArrow(tessCtx, startX + tileW * 0.5, startY + tileH * 0.5, startX + tileW * 0.5, startY + tileH * 1.5, '#D84B7A', lblV);
+          }
+
+          tessCtx.save();
+          tessCtx.fillStyle = 'rgba(27, 67, 50, 0.9)';
+          const msg2 = 'Bước 2: Ghép cụm mảnh đầu tiên khít nhau 100% — Bấm "Bước tiếp theo →" để phủ kín toàn tranh';
+          tessCtx.font = '600 12px Inter, sans-serif';
+          const tw2 = tessCtx.measureText(msg2).width + 28;
+          tessCtx.beginPath();
+          tessCtx.roundRect((w - tw2) / 2, h - 42, tw2, 30, 15);
+          tessCtx.fill();
+          tessCtx.fillStyle = '#FFFFFF';
+          tessCtx.fillText(msg2, (w - tw2) / 2 + 14, h - 23);
+          tessCtx.restore();
+          return;
+        }
+
+        // ==================== STEP 3: FULL TESSELLATION ARTWORK ====================
+        tessCtx.save();
+        tessCtx.globalAlpha = Math.max(0.2, animT);
+        if (mode === 'hex120') {
+          const R = Math.max(w, h) / (N * 1.45);
+          const dx = 1.5 * R;
+          const dy = Math.sqrt(3) * R;
+          const cols = Math.ceil(w / dx) + 3;
+          const rows = Math.ceil(h / dy) + 3;
+
+          for (let col = -1; col < cols; col++) {
+            for (let row = -1; row < rows; row++) {
+              const cx = col * dx;
+              const cy = row * dy + (col % 2 !== 0 ? dy / 2 : 0);
+              const colorIdx = ((col % 3 + 3) % 3 + (row % 2 + 2) % 2) % pal.colors.length;
+              const isBase = state.tess.highlightBase && col === Math.floor(cols / 2) - 1 && row === Math.floor(rows / 2) - 1;
+
+              tessCtx.save();
+              tessCtx.translate(cx, cy);
+              const pts = poly.map(p => ({ x: p.x * R, y: p.y * R }));
+              traceSmoothPolygon(tessCtx, pts);
+              tessCtx.fillStyle = pal.colors[colorIdx];
+              tessCtx.fill();
+              if (state.tess.showStroke || isBase) {
+                tessCtx.strokeStyle = isBase ? '#E11D48' : pal.stroke;
+                tessCtx.lineWidth = isBase ? 3.5 : 1.2;
+                tessCtx.stroke();
+              }
+              drawTileInnerStamp(tessCtx, 0, 0, R * 1.15, pal.stroke);
+              tessCtx.restore();
+            }
+          }
+        } else {
+          const S = Math.max(w, h) / N;
+          const tileW = S * asp.w;
+          const tileH = S * asp.h;
+          const cols = Math.ceil(w / tileW) + 2;
+          const rows = Math.ceil(h / tileH) + 2;
+          const midC = Math.floor(cols / 2) - 1;
+          const midR = Math.floor(rows / 2) - 1;
+
+          for (let r = -1; r < rows; r++) {
+            for (let c = -1; c < cols; c++) {
+              const isBase = state.tess.highlightBase && c === midC && r === midR;
+              tessCtx.save();
+
+              let colorIdx = ((c + r) % 2 + 2) % 2;
+              if (mode === 'translation') {
+                colorIdx = ((c % 2 + 2) % 2) + ((r % 2 + 2) % 2) * 2;
+                tessCtx.translate(c * tileW, r * tileH);
+              } else if (mode === 'glide') {
+                colorIdx = ((c + r) % 2 + 2) % 2;
+                if (r % 2 !== 0) {
+                  tessCtx.translate((c + 1) * tileW, r * tileH);
+                  tessCtx.scale(-1, 1);
+                } else {
+                  tessCtx.translate(c * tileW, r * tileH);
+                }
+              } else if (mode === 'axial_mirror') {
+                colorIdx = ((c % 2 + 2) % 2) + ((r % 2 + 2) % 2) * 2;
+                const flipX = (((r % 2) + 2) % 2 === 1) ? -1 : 1;
+                const flipY = (((c % 2) + 2) % 2 === 1) ? -1 : 1;
+                tessCtx.translate(c * tileW + (flipX < 0 ? tileW : 0), r * tileH + (flipY < 0 ? tileH : 0));
+                tessCtx.scale(flipX, flipY);
+              } else if (mode === 'central180') {
+                colorIdx = ((c + r) % 2 + 2) % 2;
+                if (((c + r) % 2 + 2) % 2 === 1) {
+                  tessCtx.translate((c + 0.5) * tileW, (r + 0.5) * tileH);
+                  tessCtx.rotate(Math.PI);
+                  tessCtx.translate(-0.5 * tileW, -0.5 * tileH);
+                } else {
+                  tessCtx.translate(c * tileW, r * tileH);
+                }
+              } else if (mode === 'rotation90') {
+                const rc = ((c % 2) + 2) % 2;
+                const rr = ((r % 2) + 2) % 2;
+                let rot = 0;
+                if (rc === 0 && rr === 0) { rot = 0; colorIdx = 0; }
+                else if (rc === 1 && rr === 0) { rot = Math.PI / 2; colorIdx = 1; }
+                else if (rc === 1 && rr === 1) { rot = Math.PI; colorIdx = 2; }
+                else { rot = -Math.PI / 2; colorIdx = 3; }
+
+                tessCtx.translate((c + 0.5) * tileW, (r + 0.5) * tileH);
+                tessCtx.rotate(rot);
+                tessCtx.translate(-0.5 * tileW, -0.5 * tileH);
+              }
+
+              const pts = poly.map(p => ({ x: p.x * S, y: p.y * S }));
+              traceSmoothPolygon(tessCtx, pts);
+              tessCtx.fillStyle = pal.colors[colorIdx % pal.colors.length];
+              tessCtx.fill();
+
+              if (state.tess.showStroke || isBase) {
+                tessCtx.strokeStyle = isBase ? '#E11D48' : pal.stroke;
+                tessCtx.lineWidth = isBase ? 3.5 : 1.15;
+                tessCtx.stroke();
+              }
+              drawTileInnerStamp(tessCtx, tileW * 0.5, tileH * 0.5, S, pal.stroke);
+              tessCtx.restore();
+            }
+          }
+        }
+        tessCtx.restore();
+      }
+
+      // Tile Editor Dragging
+      function getTileEditorEdgeSpecs(targetCanvas = activeEditorCanvas) {
+        const rect = targetCanvas.parentElement.getBoundingClientRect();
+        const w = rect.width, h = rect.height;
+        const mode = state.tess.mode;
+        if (mode === 'hex120') {
+          const R = Math.min(w, h) * 0.34;
+          const V = [];
+          for (let i = 0; i < 6; i++) {
+            const a = (i * Math.PI) / 3;
+            V.push({ x: w / 2 + Math.cos(a) * R, y: h / 2 + Math.sin(a) * R });
+          }
+          return [
+            { p0: V[0], p1: V[1], nodes: state.tess.edgeA },
+            { p0: V[2], p1: V[3], nodes: state.tess.edgeB },
+            { p0: V[4], p1: V[5], nodes: state.tess.edgeC }
+          ];
+        }
+        const asp = getBaseAspect(mode);
+        const S = Math.min((w * 0.64) / asp.w, (h * 0.56) / asp.h);
+        const tileW = S * asp.w, tileH = S * asp.h;
+        const ox = (w - tileW) / 2, oy = (h - tileH) / 2;
+        const TL = { x: ox, y: oy }, TR = { x: ox + tileW, y: oy }, BR = { x: ox + tileW, y: oy + tileH }, BL = { x: ox, y: oy + tileH };
+        if (mode === 'rotation90') {
+          return [
+            { p0: TL, p1: BL, nodes: state.tess.edgeA, flipPerp: true },
+            { p0: BR, p1: BL, nodes: state.tess.edgeB, flipPerp: false }
+          ];
+        }
+        if (mode === 'central180') {
+          const Mtop = { x: ox + tileW / 2, y: oy };
+          const Mright = { x: ox + tileW, y: oy + tileH / 2 };
+          return [
+            { p0: TL, p1: Mtop, nodes: state.tess.edgeA, flipPerp: false },
+            { p0: TR, p1: Mright, nodes: state.tess.edgeB, flipPerp: false }
+          ];
+        }
+        return [
+          { p0: TL, p1: TR, nodes: state.tess.edgeA, flipPerp: false },
+          { p0: TR, p1: BR, nodes: state.tess.edgeB, flipPerp: false }
+        ];
+      }
+
+      function onTileEditorDown(evt, targetCanvas = tileCanvas) {
+        activeEditorCanvas = targetCanvas;
+        const p = getPointerPos(evt, targetCanvas);
+        const specs = getTileEditorEdgeSpecs(targetCanvas);
+        for (let sIdx = 0; sIdx < specs.length; sIdx++) {
+          const sp = specs[sIdx];
+          const dx = sp.p1.x - sp.p0.x, dy = sp.p1.y - sp.p0.y;
+          const sign = sp.flipPerp ? -1 : 1;
+          const nx = dy * sign, ny = -dx * sign;
+          for (let nIdx = 0; nIdx < sp.nodes.length; nIdx++) {
+            const n = sp.nodes[nIdx];
+            const x = sp.p0.x + dx * n.t + nx * n.d;
+            const y = sp.p0.y + dy * n.t + ny * n.d;
+            if (Math.hypot(p.x - x, p.y - y) < 16) {
+              state.tess.draggingNode = { sIdx, nIdx };
+              evt.preventDefault();
+              return;
+            }
+          }
+        }
+      }
+
+      function onTileEditorMove(evt) {
+        if (!state.tess.draggingNode) return;
+        evt.preventDefault();
+        const p = getPointerPos(evt, activeEditorCanvas);
+        const specs = getTileEditorEdgeSpecs(activeEditorCanvas);
+        const sp = specs[state.tess.draggingNode.sIdx];
+        const node = sp.nodes[state.tess.draggingNode.nIdx];
+        const dx = sp.p1.x - sp.p0.x, dy = sp.p1.y - sp.p0.y;
+        const len2 = dx * dx + dy * dy;
+        if (len2 < 1) return;
+        const rx = p.x - sp.p0.x, ry = p.y - sp.p0.y;
+        const sign = sp.flipPerp ? -1 : 1;
+        const t = Math.max(0.02, Math.min(0.98, (rx * dx + ry * dy) / len2));
+        const d = Math.max(-0.45, Math.min(0.45, ((rx * dy - ry * dx) / len2) * sign));
+        node.t = t;
+        node.d = d;
+        renderTileEditor();
+        renderTessellation();
+      }
+
+      function onTileEditorUp() {
+        state.tess.draggingNode = null;
+      }
+
+      tileCanvas.addEventListener('mousedown', e => onTileEditorDown(e, tileCanvas));
+      tileZoomCanvas.addEventListener('mousedown', e => onTileEditorDown(e, tileZoomCanvas));
+      window.addEventListener('mousemove', onTileEditorMove);
+      window.addEventListener('mouseup', onTileEditorUp);
+      tileCanvas.addEventListener('touchstart', e => onTileEditorDown(e, tileCanvas), { passive: false });
+      tileZoomCanvas.addEventListener('touchstart', e => onTileEditorDown(e, tileZoomCanvas), { passive: false });
+      window.addEventListener('touchmove', onTileEditorMove, { passive: false });
+      window.addEventListener('touchend', onTileEditorUp);
+
+      // Zoom Modal controls
+      const modalTileZoom = document.getElementById('modal-tile-zoom');
+      function closeZoomModal() { modalTileZoom.classList.add('hidden'); }
+      document.getElementById('btn-tess-zoom-editor').addEventListener('click', () => {
+        modalTileZoom.classList.remove('hidden');
+        requestAnimationFrame(() => renderTileEditor());
+      });
+      document.getElementById('btn-close-zoom-modal').addEventListener('click', closeZoomModal);
+      document.getElementById('btn-zoom-done').addEventListener('click', closeZoomModal);
+      document.getElementById('btn-zoom-reset').addEventListener('click', () => {
+        document.getElementById('btn-tess-reset-base').click();
+      });
+      document.getElementById('btn-zoom-random').addEventListener('click', () => {
+        document.getElementById('btn-tess-random').click();
+      });
+
+      // ==================== A4 PRINT WORKSHEET GENERATOR ====================
+      const modalPrint = document.getElementById('modal-print-sheet');
+      const printCanvas = document.getElementById('print-sheet-canvas');
+      const printCtx = printCanvas.getContext('2d');
+
+      function renderPrintWorksheet() {
+        // Crisp A4 portrait resolution (1240 x 1754 ~ 150 DPI print-ready)
+        const W = 1240, H = 1754;
+        printCanvas.width = W;
+        printCanvas.height = H;
+        printCtx.fillStyle = '#FFFFFF';
+        printCtx.fillRect(0, 0, W, H);
+
+        // Outer border frame
+        printCtx.strokeStyle = '#1B4332';
+        printCtx.lineWidth = 4;
+        printCtx.strokeRect(42, 42, W - 84, H - 84);
+        printCtx.strokeStyle = '#D1D5DB';
+        printCtx.lineWidth = 1.5;
+        printCtx.strokeRect(52, 52, W - 104, H - 104);
+
+        // Header block
+        printCtx.fillStyle = '#1B4332';
+        printCtx.font = '700 22px Inter, sans-serif';
+        printCtx.fillText('TIẾT DẠY STEAM TOÁN 11 · LỚP 11A4 · FESTIVAL HOA ĐÀ LẠT XI', 80, 102);
+
+        printCtx.fillStyle = '#111827';
+        printCtx.font = '800 34px Georgia, serif';
+        printCtx.fillText('PHIẾU THỰC HÀNH VẼ MẪU TRANH ĐAN KHÍT', 80, 150);
+
+        const mode = state.tess.mode;
+        const asp = getBaseAspect(mode);
+        const poly = getUnitTilePolygon(mode);
+        const showGuides = document.getElementById('chk-print-guides').checked;
+
+        printCtx.fillStyle = '#374151';
+        printCtx.font = '600 20px Inter, sans-serif';
+        printCtx.fillText('Quy tắc: ' + MODE_LABELS[mode], 80, 190);
+        printCtx.fillText('Họ tên Giám khảo / Khách mời: ___________________________________________', 80, 228);
+
+        // Divider
+        printCtx.strokeStyle = '#E5E7EB';
+        printCtx.lineWidth = 2;
+        printCtx.beginPath(); printCtx.moveTo(80, 252); printCtx.lineTo(W - 80, 252); printCtx.stroke();
+
+        // SECTION 1: Large single base tile for tracing/cutting
+        printCtx.fillStyle = '#1B4332';
+        printCtx.font = '700 22px Inter, sans-serif';
+        printCtx.fillText('1. Mảnh ghép cơ sở (Dùng để quan sát đường biến hình hoặc cắt làm rập vẽ theo):', 80, 294);
+
+        const box1Y = 320, box1H = 420;
+        printCtx.strokeStyle = '#CBD5E1';
+        printCtx.lineWidth = 1.5;
+        printCtx.strokeRect(80, box1Y, W - 160, box1H);
+
+        if (mode === 'hex120') {
+          const R = 145;
+          const cx = W / 2, cy = box1Y + box1H / 2;
+          printCtx.save();
+          printCtx.translate(cx, cy);
+          printCtx.strokeStyle = '#9CA3AF';
+          printCtx.lineWidth = 1.5;
+          printCtx.setLineDash([8, 6]);
+          printCtx.beginPath();
+          for (let i = 0; i < 6; i++) {
+            const a = (i * Math.PI) / 3;
+            const px = Math.cos(a) * R, py = Math.sin(a) * R;
+            if (i === 0) printCtx.moveTo(px, py); else printCtx.lineTo(px, py);
+          }
+          printCtx.closePath();
+          printCtx.stroke();
+          printCtx.setLineDash([]);
+
+          const pts = poly.map(p => ({ x: p.x * R, y: p.y * R }));
+          traceSmoothPolygon(printCtx, pts);
+          printCtx.fillStyle = '#F9FAFB';
+          printCtx.fill();
+          printCtx.strokeStyle = '#111827';
+          printCtx.lineWidth = 3.5;
+          printCtx.stroke();
+          printCtx.restore();
+        } else {
+          const S = Math.min(300 / asp.w, 250 / asp.h);
+          const tw = S * asp.w, th = S * asp.h;
+          const ox = (W - tw) / 2, oy = box1Y + (box1H - th) / 2;
+          printCtx.save();
+          printCtx.strokeStyle = '#9CA3AF';
+          printCtx.lineWidth = 1.8;
+          printCtx.setLineDash([8, 6]);
+          printCtx.strokeRect(ox, oy, tw, th);
+          printCtx.setLineDash([]);
+
+          printCtx.translate(ox, oy);
+          const pts = poly.map(p => ({ x: p.x * S, y: p.y * S }));
+          traceSmoothPolygon(printCtx, pts);
+          printCtx.fillStyle = '#F9FAFB';
+          printCtx.fill();
+          printCtx.strokeStyle = '#111827';
+          printCtx.lineWidth = 3.5;
+          printCtx.stroke();
+          printCtx.restore();
+
+          if (mode === 'rotation90') {
+            printCtx.fillStyle = '#111827';
+            printCtx.font = '800 22px Inter, sans-serif';
+            printCtx.fillText('A (+90°)', ox - 95, oy - 8);
+            printCtx.fillText('B (-90°)', ox + tw + 14, oy + th + 20);
+          } else if (mode === 'central180') {
+            printCtx.fillStyle = '#111827';
+            printCtx.font = '800 20px Inter, sans-serif';
+            printCtx.fillText('I₁ (180°)', ox + tw / 2 - 36, oy - 14);
+            printCtx.fillText('I₂ (180°)', ox + tw + 14, oy + th / 2 + 6);
+          }
+        }
+
+        // SECTION 2: Tracing Grid for Judges (1 bold starting tile + faint dotted guides for neighbors)
+        printCtx.fillStyle = '#1B4332';
+        printCtx.font = '700 22px Inter, sans-serif';
+        printCtx.fillText('2. Khung vẽ đan khít (Tô nối tiếp theo nét mờ hoặc tự sáng tạo màu sắc Festival Hoa):', 80, 795);
+
+        const gridX = 80, gridY = 820, gridW = W - 160, gridH = 810;
+        printCtx.save();
+        printCtx.beginPath();
+        printCtx.rect(gridX, gridY, gridW, gridH);
+        printCtx.clip();
+        printCtx.fillStyle = '#FFFFFF';
+        printCtx.fillRect(gridX, gridY, gridW, gridH);
+
+        if (mode === 'hex120') {
+          const R = 115;
+          const dx = 1.5 * R, dy = Math.sqrt(3) * R;
+          for (let col = 0; col < 7; col++) {
+            for (let row = 0; row < 5; row++) {
+              const cx = gridX + 120 + col * dx;
+              const cy = gridY + 120 + row * dy + (col % 2 !== 0 ? dy / 2 : 0);
+              const isStart = (col === 0 && row === 0);
+              if (!isStart && !showGuides) continue;
+              printCtx.save();
+              printCtx.translate(cx, cy);
+              traceSmoothPolygon(printCtx, poly.map(p => ({ x: p.x * R, y: p.y * R })));
+              if (isStart) {
+                printCtx.fillStyle = '#F3F4F6';
+                printCtx.fill();
+                printCtx.strokeStyle = '#111827';
+                printCtx.lineWidth = 3.2;
+              } else {
+                printCtx.strokeStyle = '#9CA3AF';
+                printCtx.lineWidth = 1.6;
+                printCtx.setLineDash([6, 6]);
+              }
+              printCtx.stroke();
+              printCtx.restore();
+            }
+          }
+        } else {
+          const cols = asp.w > 1.2 ? 4 : 5;
+          const rows = 4;
+          const S = Math.min((gridW - 100) / (cols * asp.w), (gridH - 100) / (rows * asp.h));
+          const tw = S * asp.w, th = S * asp.h;
+          const sx0 = gridX + (gridW - cols * tw) / 2;
+          const sy0 = gridY + (gridH - rows * th) / 2;
+
+          for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+              const isStart = (r === 0 && c === 0);
+              if (!isStart && !showGuides) continue;
+              printCtx.save();
+              const tx = sx0 + c * tw, ty = sy0 + r * th;
+              if (mode === 'translation') {
+                printCtx.translate(tx, ty);
+              } else if (mode === 'glide') {
+                if (r % 2 !== 0) { printCtx.translate(tx + tw, ty); printCtx.scale(-1, 1); }
+                else printCtx.translate(tx, ty);
+              } else if (mode === 'axial_mirror') {
+                const fx = (r % 2 !== 0) ? -1 : 1;
+                const fy = (c % 2 !== 0) ? -1 : 1;
+                printCtx.translate(tx + (fx < 0 ? tw : 0), ty + (fy < 0 ? th : 0));
+                printCtx.scale(fx, fy);
+              } else if (mode === 'central180') {
+                if ((c + r) % 2 !== 0) {
+                  printCtx.translate(tx + tw * 0.5, ty + th * 0.5);
+                  printCtx.rotate(Math.PI);
+                  printCtx.translate(-tw * 0.5, -th * 0.5);
+                } else printCtx.translate(tx, ty);
+              } else if (mode === 'rotation90') {
+                const rc = c % 2, rr = r % 2;
+                let rot = 0;
+                if (rc === 1 && rr === 0) rot = Math.PI / 2;
+                else if (rc === 1 && rr === 1) rot = Math.PI;
+                else if (rc === 0 && rr === 1) rot = -Math.PI / 2;
+                printCtx.translate(tx + tw * 0.5, ty + th * 0.5);
+                printCtx.rotate(rot);
+                printCtx.translate(-tw * 0.5, -th * 0.5);
+              }
+
+              traceSmoothPolygon(printCtx, poly.map(p => ({ x: p.x * S, y: p.y * S })));
+              if (isStart) {
+                printCtx.fillStyle = '#F3F4F6';
+                printCtx.fill();
+                printCtx.strokeStyle = '#111827';
+                printCtx.lineWidth = 3.2;
+              } else {
+                printCtx.strokeStyle = '#9CA3AF';
+                printCtx.lineWidth = 1.6;
+                printCtx.setLineDash([6, 6]);
+              }
+              printCtx.stroke();
+              printCtx.restore();
+            }
+          }
+        }
+        printCtx.restore();
+
+        // Outer frame of tracing box
+        printCtx.strokeStyle = '#374151';
+        printCtx.lineWidth = 2;
+        printCtx.strokeRect(gridX, gridY, gridW, gridH);
+
+        // Footer note
+        printCtx.fillStyle = '#6B7280';
+        printCtx.font = 'italic 17px Inter, sans-serif';
+        printCtx.fillText('Ghi chú: Ô tô xám đậm góc trên-trái là mảnh ghép mẫu ban đầu. Kính chúc Quý Giám khảo có tác phẩm thật đẹp!', 80, 1668);
+      }
+
+      document.getElementById('btn-open-print-sheet').addEventListener('click', () => {
+        modalPrint.classList.remove('hidden');
+        renderPrintWorksheet();
+      });
+      document.getElementById('btn-close-print-modal').addEventListener('click', () => {
+        modalPrint.classList.add('hidden');
+      });
+      document.getElementById('chk-print-guides').addEventListener('change', renderPrintWorksheet);
+      document.getElementById('btn-download-worksheet').addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.download = `PhieuVeMau_GiamKhao_11A4_${state.tess.mode}.png`;
+        link.href = printCanvas.toDataURL('image/png');
+        link.click();
+        showToast('Đã tải phiếu in mẫu A4 (PNG) cho giám khảo!');
+      });
+      document.getElementById('btn-trigger-print').addEventListener('click', () => {
+        window.print();
+      });
+
+      // Tessellation Presets & UI Wiring
+      const TESS_PRESETS = {
+        daquy: {
+          mode: 'rotation90', paletteIdx: 0, stamp: 'flower',
+          edgeA: [{ t: 0.18, d: 0.26 }, { t: 0.38, d: 0.14 }, { t: 0.60, d: 0.25 }, { t: 0.82, d: 0.16 }],
+          edgeB: [{ t: 0.22, d: 0.22 }, { t: 0.42, d: 0.08 }, { t: 0.65, d: 0.0 }, { t: 0.84, d: 0.0 }]
+        },
+        cachep: {
+          mode: 'translation', paletteIdx: 4, stamp: 'eye',
+          edgeA: [{ t: 0.20, d: 0.24 }, { t: 0.44, d: 0.10 }, { t: 0.66, d: -0.06 }, { t: 0.84, d: -0.18 }],
+          edgeB: [{ t: 0.20, d: -0.20 }, { t: 0.42, d: 0.14 }, { t: 0.65, d: -0.12 }, { t: 0.84, d: -0.18 }]
+        },
+        buom: {
+          mode: 'translation', paletteIdx: 1, stamp: 'veins',
+          edgeA: [{ t: 0.20, d: 0.26 }, { t: 0.42, d: -0.12 }, { t: 0.64, d: 0.22 }, { t: 0.84, d: 0.16 }],
+          edgeB: [{ t: 0.22, d: 0.20 }, { t: 0.46, d: -0.14 }, { t: 0.68, d: 0.18 }, { t: 0.86, d: 0.10 }]
+        },
+        songhoa: {
+          mode: 'glide', paletteIdx: 2, stamp: 'flower',
+          edgeA: [{ t: 0.20, d: 0.20 }, { t: 0.42, d: 0.10 }, { t: 0.62, d: -0.12 }, { t: 0.82, d: -0.20 }],
+          edgeB: [{ t: 0.22, d: 0.16 }, { t: 0.45, d: -0.06 }, { t: 0.68, d: -0.16 }, { t: 0.86, d: 0.08 }]
+        },
+        anhdao: {
+          mode: 'hex120', paletteIdx: 1, stamp: 'flower',
+          edgeA: [{ t: 0.32, d: 0.22 }, { t: 0.68, d: -0.18 }],
+          edgeB: [{ t: 0.32, d: 0.22 }, { t: 0.68, d: -0.18 }],
+          edgeC: [{ t: 0.32, d: 0.22 }, { t: 0.68, d: -0.18 }]
+        },
+        reset: {
+          mode: 'translation', paletteIdx: 0, stamp: 'none',
+          edgeA: [{ t: 0.20, d: 0 }, { t: 0.40, d: 0 }, { t: 0.60, d: 0 }, { t: 0.80, d: 0 }],
+          edgeB: [{ t: 0.20, d: 0 }, { t: 0.40, d: 0 }, { t: 0.60, d: 0 }, { t: 0.80, d: 0 }],
+          edgeC: [{ t: 0.35, d: 0 }, { t: 0.65, d: 0 }]
+        }
+      };
+
+      const MODE_LABELS = {
+        translation: 'Tranh đan khít bằng Phép tịnh tiến — Khớp kín mặt phẳng 100%',
+        axial_mirror: 'Tranh đan khít bằng Phép đối xứng trục — Lật gương 2 chiều khít 100%',
+        central180: 'Tranh đan khít bằng Phép đối xứng tâm — Quay 180° quanh trung điểm I',
+        rotation90: 'Tranh đan khít bằng Phép quay 90° quanh đỉnh A, B — Họa tiết cánh hoa',
+        glide: 'Tranh đan khít bằng Phép đối xứng trượt — Làn sóng hoa Đà Lạt',
+        hex120: 'Tranh đan khít Lục giác quay 120° — Hoa sao 6 cánh'
+      };
+
+      function updateTessStepUI() {
+        const st = state.tess.step;
+        const shapeTxt = state.tess.mode === 'hex120'
+          ? 'Lục giác đều'
+          : (state.tess.baseShape === 'rect' && supportsRect(state.tess.mode) ? 'Hình chữ nhật (3:2)' : 'Hình vuông (1:1)');
+        const titles = {
+          1: `Bước 1/3: Thiết kế 1 mảnh ghép cơ sở từ ${shapeTxt}`,
+          2: `Bước 2/3: Ghép cụm / dải đầu tiên bằng ${MODE_LABELS[state.tess.mode].split('—')[0].trim()}`,
+          3: `Bước 3/3: ${MODE_LABELS[state.tess.mode]}`
+        };
+        document.getElementById('tess-status-title').textContent = titles[st];
+        document.querySelectorAll('#tess-step-pills .tess-step-btn').forEach(b => {
+          const active = parseInt(b.dataset.step, 10) === st;
+          b.className = active
+            ? 'tess-step-btn px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#1B4332] text-white cursor-pointer'
+            : 'tess-step-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold text-gray-600 hover:text-[#1B4332] cursor-pointer';
+        });
+        const btnPrev = document.getElementById('btn-tess-prev');
+        const btnNext = document.getElementById('btn-tess-next');
+        btnPrev.disabled = (st === 1);
+        btnNext.textContent = st === 3 ? '↺ Làm lại từ Bước 1' : (st === 1 ? 'Bước 2: Ghép dải →' : 'Bước 3: Toàn tranh →');
+      }
+
+      function setTessStep(nextStep, animate = true) {
+        state.tess.step = Math.max(1, Math.min(3, nextStep));
+        updateTessStepUI();
+        if (state.tess.stepRaf) {
+          cancelAnimationFrame(state.tess.stepRaf);
+          state.tess.stepRaf = null;
+        }
+        if (!animate || state.tess.step === 1) {
+          state.tess.stepAnimT = 1;
+          renderTessellation();
+          return;
+        }
+        state.tess.stepAnimT = 0;
+        const t0 = performance.now();
+        const dur = 520;
+        function tick(now) {
+          const raw = Math.min(1, (now - t0) / dur);
+          state.tess.stepAnimT = 1 - Math.pow(1 - raw, 3);
+          renderTessellation();
+          if (raw < 1) state.tess.stepRaf = requestAnimationFrame(tick);
+          else { state.tess.stepAnimT = 1; state.tess.stepRaf = null; }
+        }
+        state.tess.stepRaf = requestAnimationFrame(tick);
+      }
+
+      function setTessShape(shape) {
+        state.tess.baseShape = shape;
+        if (shape === 'rect' && (state.tess.mode === 'rotation90' || state.tess.mode === 'hex120')) {
+          state.tess.mode = 'translation';
+          document.querySelectorAll('#tess-mode-group .preset-btn').forEach(b => {
+            b.classList.toggle('selected', b.dataset.mode === 'translation');
+          });
+          showToast('Hình chữ nhật áp dụng cho Tịnh tiến, Đối xứng trục, Đối xứng tâm & Đối xứng trượt');
+        }
+        document.querySelectorAll('#tess-shape-group .preset-btn').forEach(b => {
+          b.classList.toggle('selected', b.dataset.shape === shape);
+        });
+        updateTessStepUI();
+        renderTileEditor();
+        renderTessellation();
+      }
+
+      function setTessMode(mode) {
+        state.tess.mode = mode;
+        if ((mode === 'rotation90' || mode === 'hex120') && state.tess.baseShape === 'rect') {
+          state.tess.baseShape = 'square';
+          document.querySelectorAll('#tess-shape-group .preset-btn').forEach(b => {
+            b.classList.toggle('selected', b.dataset.shape === 'square');
+          });
+        }
+        document.querySelectorAll('#tess-mode-group .preset-btn').forEach(b => {
+          b.classList.toggle('selected', b.dataset.mode === mode);
+        });
+        updateTessStepUI();
+        renderTileEditor();
+        renderTessellation();
+      }
+
+      document.querySelectorAll('#tess-shape-group .preset-btn').forEach(b => {
+        b.addEventListener('click', () => setTessShape(b.dataset.shape));
+      });
+      document.querySelectorAll('#tess-step-pills .tess-step-btn').forEach(b => {
+        b.addEventListener('click', () => setTessStep(parseInt(b.dataset.step, 10), true));
+      });
+      document.getElementById('btn-tess-prev').addEventListener('click', () => {
+        if (state.tess.step > 1) setTessStep(state.tess.step - 1, false);
+      });
+      document.getElementById('btn-tess-next').addEventListener('click', () => {
+        if (state.tess.step < 3) setTessStep(state.tess.step + 1, true);
+        else setTessStep(1, false);
+      });
+
+      document.querySelectorAll('#tess-mode-group .preset-btn').forEach(b => {
+        b.addEventListener('click', () => setTessMode(b.dataset.mode));
+      });
+
+      document.querySelectorAll('#tess-presets button').forEach(b => {
+        b.addEventListener('click', () => {
+          const p = TESS_PRESETS[b.dataset.preset];
+          if (!p) return;
+          state.tess.edgeA = p.edgeA.map(o => ({ ...o }));
+          state.tess.edgeB = p.edgeB.map(o => ({ ...o }));
+          if (p.edgeC) state.tess.edgeC = p.edgeC.map(o => ({ ...o }));
+          state.tess.paletteIdx = p.paletteIdx;
+          state.tess.stamp = p.stamp;
+          document.getElementById('tess-stamp').value = p.stamp;
+          updatePaletteUI();
+          setTessMode(p.mode);
+          showToast('Đã áp dụng mẫu: ' + b.textContent);
+        });
+      });
+
+      document.getElementById('btn-tess-reset-base').addEventListener('click', () => {
+        state.tess.edgeA = [{ t: 0.20, d: 0 }, { t: 0.40, d: 0 }, { t: 0.60, d: 0 }, { t: 0.80, d: 0 }];
+        state.tess.edgeB = [{ t: 0.20, d: 0 }, { t: 0.40, d: 0 }, { t: 0.60, d: 0 }, { t: 0.80, d: 0 }];
+        state.tess.edgeC = [{ t: 0.35, d: 0 }, { t: 0.65, d: 0 }];
+        renderTileEditor();
+        renderTessellation();
+        showToast('Đã đưa ô gạch về hình cơ sở');
+      });
+
+      document.getElementById('btn-tess-random').addEventListener('click', () => {
+        const randD = () => (Math.random() - 0.5) * 0.44;
+        state.tess.edgeA.forEach(n => { n.d = randD(); });
+        state.tess.edgeB.forEach(n => { n.d = randD(); });
+        state.tess.edgeC.forEach(n => { n.d = randD(); });
+        renderTileEditor();
+        renderTessellation();
+      });
+
+      function buildPaletteUI() {
+        const box = document.getElementById('tess-palettes');
+        box.innerHTML = '';
+        PALETTES.forEach((pal, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.title = pal.name;
+          btn.dataset.idx = idx;
+          btn.className = 'palette-chip h-7 px-1.5 rounded-full border border-gray-200 flex items-center gap-0.5 bg-white cursor-pointer' +
+            (idx === state.tess.paletteIdx ? ' selected' : '');
+          pal.colors.forEach(c => {
+            const dot = document.createElement('span');
+            dot.className = 'w-4 h-4 rounded-full inline-block';
+            dot.style.backgroundColor = c;
+            btn.appendChild(dot);
+          });
+          btn.addEventListener('click', () => {
+            state.tess.paletteIdx = idx;
+            updatePaletteUI();
+            renderTileEditor();
+            renderTessellation();
+          });
+          box.appendChild(btn);
+        });
+      }
+
+      function updatePaletteUI() {
+        document.querySelectorAll('#tess-palettes .palette-chip').forEach(b => {
+          b.classList.toggle('selected', parseInt(b.dataset.idx, 10) === state.tess.paletteIdx);
+        });
+      }
+
+      document.getElementById('tess-density').addEventListener('input', e => {
+        state.tess.density = parseInt(e.target.value, 10);
+        document.getElementById('tess-density-val').textContent = `${state.tess.density}×${state.tess.density}`;
+        renderTessellation();
+      });
+      document.getElementById('tess-stamp').addEventListener('change', e => {
+        state.tess.stamp = e.target.value;
+        renderTessellation();
+      });
+      document.getElementById('tess-stroke').addEventListener('change', e => {
+        state.tess.showStroke = e.target.checked;
+        renderTessellation();
+      });
+      document.getElementById('tess-highlight-base').addEventListener('change', e => {
+        state.tess.highlightBase = e.target.checked;
+        renderTessellation();
+      });
+
+      // =========================================================================
+      // 11. TAB SWITCHING & PNG EXPORT
+      // =========================================================================
+      elTabBar.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const nextTab = btn.dataset.tab;
+          state.activeTab = nextTab;
+          if (state.animRaf) {
+            cancelAnimationFrame(state.animRaf);
+            state.animRaf = null;
+          }
+          state.animT = 1;
+
+          elTabBar.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.tab === nextTab);
+          });
+
+          if (nextTab === 'tessellation') {
+            elWsTransform.classList.add('hidden');
+            elWsTess.classList.remove('hidden');
+            updateTessStepUI();
+            requestAnimationFrame(() => {
+              renderTileEditor();
+              renderTessellation();
+            });
+          } else {
+            elWsTess.classList.add('hidden');
+            elWsTransform.classList.remove('hidden');
+            renderControlPanel();
+            requestAnimationFrame(() => {
+              resizeTransformCanvas();
+            });
+          }
+        });
+      });
+
+      document.getElementById('btn-export-png').addEventListener('click', () => {
+        const srcCanvas = state.activeTab === 'tessellation' ? tessCanvas : canvas;
+        // Create export canvas with elegant exhibition footer banner
+        const out = document.createElement('canvas');
+        const bannerH = 64;
+        out.width = srcCanvas.width;
+        out.height = srcCanvas.height + bannerH;
+        const octx = out.getContext('2d');
+
+        octx.fillStyle = '#FFFFFF';
+        octx.fillRect(0, 0, out.width, out.height);
+        octx.drawImage(srcCanvas, 0, 0);
+
+        octx.fillStyle = '#1B4332';
+        octx.fillRect(0, srcCanvas.height, out.width, bannerH);
+        octx.fillStyle = '#FFFFFF';
+        octx.font = 'bold 20px Inter, sans-serif';
+        octx.fillText('FESTIVAL HOA ĐÀ LẠT XI — LỚP 11A4 | STEAM PHÉP BIẾN HÌNH', 24, srcCanvas.height + 39);
+
+        const link = document.createElement('a');
+        link.download = `FestivalHoaDaLatXI_11A4_${state.activeTab}.png`;
+        link.href = out.toDataURL('image/png');
+        link.click();
+        showToast('Đã xuất tranh PNG Festival Hoa Đà Lạt XI!');
+      });
+
+      // =========================================================================
+      // 12. INITIALIZATION
+      // =========================================================================
+      window.addEventListener('resize', () => {
+        if (state.activeTab === 'tessellation') {
+          renderTileEditor();
+          renderTessellation();
+        } else {
+          resizeTransformCanvas();
+        }
+      });
+
+      window.addEventListener('load', () => {
+        buildMotifGallery();
+        buildPaletteUI();
+        renderControlPanel();
+        resizeTransformCanvas();
+      });
+    })();
+  </script>
+</body>
+</html>
